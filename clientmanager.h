@@ -24,6 +24,8 @@ private slots:
 
     void containClientInfo();
     void checkLoginId(QString);
+    void updateClientInfo(QStringList);
+    QString findAddressForOrder(QString);
 
 private:
     Ui::ClientManager *ui;
@@ -35,8 +37,9 @@ signals:
     void cancellation();
     void join();
     void sendClientInfo(Client*);
-    void successLogin();
+    void successLogin(QString);
     void failedLogin();
+    void clear_Widget_N_LineEdit();
 };
 
 #endif // CLIENTMANAGER_H

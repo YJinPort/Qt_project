@@ -141,10 +141,63 @@ void ClientManager::checkLoginId(QString str) {
         Client *c = static_cast<Client*>(v);
         if(str == c->getUserID()) {
             userId = c->getUserID();
-            emit successLogin();
+            emit successLogin(c->getName());
             break;
         }
     }
 
     if(userId != str) emit failedLogin();
+}
+
+//회원 정보 리스트에 등록된 회원 정보를 변경
+void ClientManager::updateClientInfo(QStringList updateList) {
+    int userCount;
+    bool checkUser = true;
+
+    Q_FOREACH(auto v, clientList) {
+        Client *c = static_cast<Client*>(v);
+        if(updateList[0] == c->getUserID()) {
+            userCount = c->userCount();
+            c->setName(updateList[1]);
+            c->setPhoneNumber(updateList[2]);
+            c->setAddress(updateList[3]);
+            c->setGender(updateList[4]);
+
+            clientList.insert(userCount, c);
+            QMessageBox::information(this, tr("수정 성공"), tr("회원 정보가 수정되었습니다."));
+
+            checkUser = false;
+            break;
+        }
+    }
+
+    if(checkUser) QMessageBox::information(this, tr("수정 실패"), tr("회원 아이디를 확인해주세요."));
+    else {
+        emit clear_Widget_N_LineEdit();
+
+        Q_FOREACH(auto v, clientList) {
+            Client *c = static_cast<Client*>(v);
+            userCount = c->userCount();
+            updateList[0] = c->getUserID();
+            updateList[1] = c->getName();
+            updateList[2] = c->getPhoneNumber();
+            updateList[3] = c->getAddress();
+            updateList[4] = c->get_Gender();
+            Client *item = new Client(userCount, updateList[0], updateList[1], updateList[2], updateList[3], updateList[4]);
+            emit sendClientInfo(item);
+        }
+    }
+}
+
+QString ClientManager::findAddressForOrder(QString orderName) {
+    QString orderAddress;
+    Q_FOREACH(auto v, clientList) {
+        Client *c = static_cast<Client*>(v);
+        if(orderName == c->getName()) {
+            orderAddress = c->getAddress();
+            break;
+        }
+    }
+
+    return orderAddress;
 }

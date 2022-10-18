@@ -5,12 +5,32 @@
 
 #include <QInputDialog>
 #include <QMessageBox>
+#include <QFile>
 
 ShoppingManager::ShoppingManager(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::ShoppingManager)
 {
     ui->setupUi(this);
+
+    QFile file("shoppinglist.txt");
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+        return;
+
+    QTextStream in(&file);
+    while (!in.atEnd()) {
+        QString line = in.readLine();
+        QList<QString> row = line.split(", ");
+        if(row.size()) {
+            int shoppingCount = row[0].toInt();
+            int proPrice = row[2].toInt();
+            int proCount = row[3].toInt();
+            Shopping* s = new Shopping(shoppingCount, row[1], proPrice, proCount, row[4], row[5]);
+            //ui->treeWidget_3->addTopLevelItem(s);
+            shoppingList.insert(shoppingCount, s);
+        }
+    }
+    file.close();
 }
 
 void ShoppingManager::dataLoad() {
@@ -21,9 +41,31 @@ void ShoppingManager::dataClear() {
     ui->treeWidget->clear();
 }
 
+int ShoppingManager::shoppingCount() {
+    if(shoppingList.size() == 0) return 1;
+    else {
+        auto cnt = shoppingList.lastKey();
+        return ++cnt;
+    }
+}
+
 ShoppingManager::~ShoppingManager()
 {
     delete ui;
+
+    QFile file("shoppinglist.txt");
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+        return;
+
+    QTextStream out(&file);
+    for (const auto& v : shoppingList) {
+        Shopping* s = v;
+        out << s->shoppingCount() << ", " << s->getProductName() << ", ";
+        out << s->getProductPrice() << ", " << s->getProductCount() << ", ";
+        out << s->getProductType() << ", ";
+        out << s->getClientAddress() << "\n";
+    }
+    file.close( );
 }
 
 //회원 가입
@@ -47,9 +89,9 @@ void ShoppingManager::on_pushButton_6_clicked()
         emit viewClientList();
         emit onlyStaff();
     }
-    //수정 필요
-    //관리 화면 들어갈때마다 회원 정보가 중복되어 나타남
 }
+
+
 
 //쇼핑 종료
 void ShoppingManager::on_pushButton_7_clicked()
@@ -63,8 +105,8 @@ void ShoppingManager::on_pushButton_2_clicked()
     emit login(ui->lineEdit->text());
 }
 
-void ShoppingManager::successLoginCheck() {
-    ui->label_2->setText(ui->lineEdit->text() + "님의 주문내역");
+void ShoppingManager::successLoginCheck(QString clientName) {
+    ui->label_2->setText(clientName + "님의 주문내역");
 }
 
 void ShoppingManager::failedLoginCheck() {
@@ -77,10 +119,29 @@ void ShoppingManager::failedLoginCheck() {
 //주문하기
 void ShoppingManager::on_pushButton_3_clicked()
 {
-    qDebug("주문 성공");
-
-    int proPrice, proCount;
+    int orderCount, proPrice, proCount;
     QString proName, proType, address;
+    QString clientName;
+    QList<QString> labelText;
+    bool ok;
+
+    labelText = ui->label_2->text().split("님");
+    clientName = labelText[0];
+
+    if(ui->label_2->text().length() > 5 && ui->treeWidget->currentItem() != nullptr) {
+        qDebug("주문 성공");
+        orderCount = shoppingCount();
+        proName = ui->treeWidget->currentItem()->text(1);
+        proPrice = ui->treeWidget->currentItem()->text(2).toInt();
+        proCount = QInputDialog::getText(this, "Order", "주문 수량을 입력하세요.", QLineEdit::Normal, NULL, &ok).toInt();
+        proType = ui->treeWidget->currentItem()->text(4);
+
+        address = emit takeOrderSign(clientName);
+
+        qDebug() << "주소: " << address;
+        qDebug() << "주문 수량: " << proCount;
+    }
+    else return;
 
 
 }

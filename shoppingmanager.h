@@ -38,12 +38,13 @@ private slots:
 
     void receivedProductInfo(Product*);
 
-    void successLoginCheck();
+    void successLoginCheck(QString);
     void failedLoginCheck();
 
 private:
     Ui::ShoppingManager *ui;
 
+    int shoppingCount();
     QMap<int, Shopping*> shoppingList;
 
 signals:
@@ -53,6 +54,7 @@ signals:
     void viewClientList();
     void viewProductList();
     void login(QString);
+    QString takeOrderSign(QString);
 };
 
 #endif // SHOPPINGMANAGER_H

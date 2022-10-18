@@ -34,6 +34,10 @@ private slots:
 
     void on_pushButton_4_clicked();
 
+    void on_pushButton_3_clicked();
+
+    void clearClientWidget_N_LineEdit();
+
 private:
     Ui::ProductManager *ui;
 
@@ -42,6 +46,7 @@ private:
 signals:
     void quitProduct();
     void sendProductInfo(Product*);
+    void updateBtnClicked(QStringList);
 };
 
 #endif // PRODUCTMANAGER_H

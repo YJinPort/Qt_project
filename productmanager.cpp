@@ -145,6 +145,8 @@ void ProductManager::on_pushButton_2_clicked()
     ui->lineEdit_4->clear();
     ui->lineEdit_5->clear();
 
+    ui->treeWidget_2->clear();      //회원 정보 리스트의 중복 출력 방지를 위해 트리위젯을 초기화
+
     emit quitProduct();
 }
 
@@ -195,6 +197,29 @@ void ProductManager::on_treeWidget_2_itemClicked(QTreeWidgetItem *item, int colu
     ui->lineEdit_10->setText(item->text(5));
 }
 
+//회원 정보 수정
+void ProductManager::on_pushButton_3_clicked()
+{
+    QString userId, userName, userCall, userAddress, userGender;
+    userId = ui->lineEdit_6->text();
+    userName = ui->lineEdit_7->text();
+    userCall = ui->lineEdit_8->text();
+    userAddress = ui->lineEdit_9->text();
+    userGender = ui->lineEdit_10->text();
 
+    QStringList updateCliList;
+    updateCliList << userId << userName << userCall << userAddress << userGender;
+    qDebug("수정 버튼 클릭");
+    emit updateBtnClicked(updateCliList);
+}
 
+//회원 정보 수정 시 우측 라인Edit을 비우고 리스트를 새롭게 load하기 위해 비운다.
+void ProductManager::clearClientWidget_N_LineEdit() {
+    ui->lineEdit_6->clear();
+    ui->lineEdit_7->clear();
+    ui->lineEdit_8->clear();
+    ui->lineEdit_9->clear();
+    ui->lineEdit_10->clear();
 
+    ui->treeWidget_2->clear();
+}

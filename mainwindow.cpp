@@ -27,15 +27,18 @@ MainWindow::MainWindow(QWidget *parent)
     connect(shoppingManager, SIGNAL(viewClientList()), clientManager, SLOT(containClientInfo()));
     connect(shoppingManager, SIGNAL(viewProductList()), productManager, SLOT(containProductInfo()));
     connect(shoppingManager, SIGNAL(login(QString)), clientManager, SLOT(checkLoginId(QString)));
+    connect(shoppingManager, SIGNAL(takeOrderSign(QString)), clientManager, SLOT(findAddressForOrder(QString)));
 
     connect(clientManager, SIGNAL(cancellation()), this, SLOT(cancellationClient()));
     connect(clientManager, SIGNAL(join()), this, SLOT(joinClient()));
     connect(clientManager, SIGNAL(sendClientInfo(Client*)), productManager, SLOT(receivedClientInfo(Client*)));
-    connect(clientManager, SIGNAL(successLogin()), shoppingManager, SLOT(successLoginCheck()));
+    connect(clientManager, SIGNAL(successLogin(QString)), shoppingManager, SLOT(successLoginCheck(QString)));
     connect(clientManager, SIGNAL(failedLogin()), shoppingManager, SLOT(failedLoginCheck()));
+    connect(clientManager, SIGNAL(clear_Widget_N_LineEdit()), productManager, SLOT(clearClientWidget_N_LineEdit()));
 
     connect(productManager, SIGNAL(quitProduct()), this, SLOT(quitProductWindow()));
     connect(productManager, SIGNAL(sendProductInfo(Product*)), shoppingManager, SLOT(receivedProductInfo(Product*)));
+    connect(productManager, SIGNAL(updateBtnClicked(QStringList)), clientManager, SLOT(updateClientInfo(QStringList)));
 
     shoppingManager->dataLoad();
 }
