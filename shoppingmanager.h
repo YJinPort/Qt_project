@@ -21,6 +21,8 @@ public:
     void dataLoad();
     void dataClear();
 
+    void loadShoppingWidget(QString);
+
 private slots:
     void on_pushButton_clicked();
 

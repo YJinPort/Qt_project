@@ -25,7 +25,7 @@ ShoppingManager::ShoppingManager(QWidget *parent) :
             int shoppingCount = row[0].toInt();
             int proPrice = row[2].toInt();
             int proCount = row[3].toInt();
-            Shopping* s = new Shopping(shoppingCount, row[1], proPrice, proCount, row[4], row[5]);
+            Shopping* s = new Shopping(shoppingCount, row[1], proPrice, proCount, row[4], row[5], row[6]);
             //ui->treeWidget_3->addTopLevelItem(s);
             shoppingList.insert(shoppingCount, s);
         }
@@ -62,8 +62,8 @@ ShoppingManager::~ShoppingManager()
         Shopping* s = v;
         out << s->shoppingCount() << ", " << s->getProductName() << ", ";
         out << s->getProductPrice() << ", " << s->getProductCount() << ", ";
-        out << s->getProductType() << ", ";
-        out << s->getClientAddress() << "\n";
+        out << s->getProductType() << ", " << s->getClientAddress() << ", ";
+        out << s->getClientName() << "\n";
     }
     file.close( );
 }
@@ -103,10 +103,35 @@ void ShoppingManager::on_pushButton_7_clicked()
 void ShoppingManager::on_pushButton_2_clicked()
 {
     emit login(ui->lineEdit->text());
+    ui->lineEdit->clear();
 }
 
+//Label에 사용자 이름 표시
 void ShoppingManager::successLoginCheck(QString clientName) {
     ui->label_2->setText(clientName + "님의 주문내역");
+
+    loadShoppingWidget(clientName);
+}
+
+void ShoppingManager::loadShoppingWidget(QString name) {
+    ui->treeWidget_3->clear();
+    qDebug() << name;
+
+    foreach(const auto v, shoppingList) {
+        qDebug("3");
+        Shopping *s = static_cast<Shopping*>(v);
+
+        qDebug("4");
+        //Shopping을 참조하려하면 crashed남....
+        if(s->getClientName() == "") {
+            qDebug("없음");
+            break;
+        }
+        qDebug("5");
+        if(name == s->getClientName()) {
+            ui->treeWidget_3->addTopLevelItem(s);
+        }
+    }
 }
 
 void ShoppingManager::failedLoginCheck() {
@@ -129,21 +154,19 @@ void ShoppingManager::on_pushButton_3_clicked()
     clientName = labelText[0];
 
     if(ui->label_2->text().length() > 5 && ui->treeWidget->currentItem() != nullptr) {
-        qDebug("주문 성공");
         orderCount = shoppingCount();
         proName = ui->treeWidget->currentItem()->text(1);
         proPrice = ui->treeWidget->currentItem()->text(2).toInt();
         proCount = QInputDialog::getText(this, "Order", "주문 수량을 입력하세요.", QLineEdit::Normal, NULL, &ok).toInt();
         proType = ui->treeWidget->currentItem()->text(4);
-
         address = emit takeOrderSign(clientName);
 
-        qDebug() << "주소: " << address;
-        qDebug() << "주문 수량: " << proCount;
+        Shopping *s = new Shopping(orderCount, proName, proPrice, proCount, proType, address, clientName);
+        shoppingList.insert(orderCount, s);
+        QMessageBox::information(this, tr("주문 성공"), tr("주문이 완료되었습니다."));
+        ui->treeWidget_3->addTopLevelItem(s);
     }
     else return;
-
-
 }
 
 //주문 변경

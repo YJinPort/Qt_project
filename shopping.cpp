@@ -1,6 +1,6 @@
 #include "shopping.h"
 
-Shopping::Shopping(int shoppingCount, QString productName, int productPrice, int productCount, QString productType, QString clientAddress)
+Shopping::Shopping(int shoppingCount, QString productName, int productPrice, int productCount, QString productType, QString clientAddress, QString clientName)
 {
     setText(0, QString::number(shoppingCount));
     setText(1, productName);
@@ -8,6 +8,7 @@ Shopping::Shopping(int shoppingCount, QString productName, int productPrice, int
     setText(3, QString::number(productCount));
     setText(4, productType);
     setText(5, clientAddress);
+    setText(6, clientName);
 }
 
 int Shopping::shoppingCount() const {
@@ -34,6 +35,10 @@ QString Shopping::getClientAddress() const {
     return text(5);
 }
 
+QString Shopping::getClientName() const {
+    return text(6);
+}
+
 void Shopping::setProductName(QString &productName) {
     setText(1, productName);
 }
@@ -52,4 +57,8 @@ void Shopping::setProductType(QString &productType) {
 
 void Shopping::setClientAddress(QString &clientAddress) {
     setText(5, clientAddress);
+}
+
+void Shopping::setClientName(QString &clientName) {
+    setText(6, clientName);
 }

@@ -6,19 +6,21 @@
 class Shopping : public QTreeWidgetItem
 {
 public:
-    explicit Shopping(int = 0, QString = "", int = 0, int = 0, QString = "", QString = "");
+    explicit Shopping(int = 0, QString = "", int = 0, int = 0, QString = "", QString = "", QString = "");
 
     QString getProductName() const;
     int getProductPrice() const;
     int getProductCount() const;
     QString getProductType() const;
     QString getClientAddress() const;
+    QString getClientName() const;
 
     void setProductName(QString&);
     void setProductPrice(int&);
     void setProductCount(int&);
     void setProductType(QString&);
     void setClientAddress(QString&);
+    void setClientName(QString&);
 
     int shoppingCount() const;
 };

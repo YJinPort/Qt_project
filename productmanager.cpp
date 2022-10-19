@@ -97,7 +97,7 @@ void ProductManager::on_pushButton_clicked()
             Product *p = new Product(proNumber, proName, proPrice, proCount, proType);
             productList.insert(proNumber, p);       //새로운 제품의 값을 제품리스트에 입력한다.
             ui->treeWidget->addTopLevelItem(p);     //입력된 값을 ui의 treeWidget에 등록한다.
-            QMessageBox::information(this, tr("등록 성공"), tr("새로운 제품이 등록되었습니다.."));
+            QMessageBox::information(this, tr("등록 성공"), tr("새로운 제품이 등록되었습니다."));
         }
 
         ui->lineEdit->clear();
