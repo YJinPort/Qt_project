@@ -28,6 +28,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(shoppingManager, SIGNAL(viewProductList()), productManager, SLOT(containProductInfo()));
     connect(shoppingManager, SIGNAL(login(QString)), clientManager, SLOT(checkLoginId(QString)));
     connect(shoppingManager, SIGNAL(takeOrderSign(QString)), clientManager, SLOT(findAddressForOrder(QString)));
+    connect(shoppingManager, SIGNAL(updateAfter_upCount(QString, int)), productManager, SLOT(updateAfterUpCount(QString, int)));
+    connect(shoppingManager, SIGNAL(updateAfter_downCount(QString, int)), productManager, SLOT(updateAfterDownCount(QString, int)));
 
     connect(clientManager, SIGNAL(cancellation()), this, SLOT(cancellationClient()));
     connect(clientManager, SIGNAL(join()), this, SLOT(joinClient()));

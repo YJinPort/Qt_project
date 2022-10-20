@@ -37,6 +37,8 @@ private slots:
     void on_pushButton_3_clicked();
 
     void clearClientWidget_N_LineEdit();
+    int updateAfterUpCount(QString, int);
+    void updateAfterDownCount(QString, int);
 
 private:
     Ui::ProductManager *ui;

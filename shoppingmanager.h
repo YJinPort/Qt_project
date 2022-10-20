@@ -57,6 +57,9 @@ signals:
     void viewProductList();
     void login(QString);
     QString takeOrderSign(QString);
+    int updateAfter_upCount(QString, int);
+    void updateAfter_downCount(QString, int);
+
 };
 
 #endif // SHOPPINGMANAGER_H

@@ -223,3 +223,35 @@ void ProductManager::clearClientWidget_N_LineEdit() {
 
     ui->treeWidget_2->clear();
 }
+
+//쇼핑에서 주문하기 or 주문변경 시 재고 확인 및 관리
+int ProductManager::updateAfterUpCount(QString name, int cnt) {
+    int afterCount;
+    Q_FOREACH(auto v, productList) {
+        Product *p = static_cast<Product*>(v);
+        if(name == p->getProName()) {
+            afterCount = p->getProCount() - cnt;
+            if(afterCount < 0) return -1;
+            p->setProCount(afterCount);
+            productList.insert(p->getProNumber(), p);
+            break;
+        }
+    }
+    return 0;
+}
+
+//쇼핑에서 주문변경 시 재고 관리
+void ProductManager::updateAfterDownCount(QString name, int cnt) {
+    int afterCount;
+    Q_FOREACH(auto v, productList) {
+        Product *p = static_cast<Product*>(v);
+        if(name == p->getProName()) {
+            afterCount = p->getProCount() + cnt;
+            p->setProCount(afterCount);
+            productList.insert(p->getProNumber(), p);
+            break;
+        }
+    }
+}
+
+

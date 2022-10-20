@@ -253,7 +253,7 @@
            </column>
            <column>
             <property name="text">
-             <string>제품 수량</string>
+             <string>주문 수량</string>
             </property>
            </column>
            <column>
@@ -264,11 +264,6 @@
            <column>
             <property name="text">
              <string>배송 주소</string>
-            </property>
-           </column>
-           <column>
-            <property name="text">
-             <string>주문자 성함</string>
             </property>
            </column>
           </widget>
