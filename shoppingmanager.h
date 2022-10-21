@@ -43,6 +43,12 @@ private slots:
     void successLoginCheck(QString);
     void failedLoginCheck();
 
+    void on_pushButton_9_clicked();
+
+    void on_pushButton_8_clicked();
+
+    void on_pushButton_10_clicked();
+
 private:
     Ui::ShoppingManager *ui;
 
@@ -51,6 +57,7 @@ private:
 
 signals:
     void newClient();
+    int deleteClient(QString);
     void onlyStaff();
     void exitShopping();
     void viewClientList();
@@ -60,6 +67,7 @@ signals:
     int updateAfter_upCount(QString, int);
     void updateAfter_downCount(QString, int);
 
+    void serverBtnClicked();
 };
 
 #endif // SHOPPINGMANAGER_H

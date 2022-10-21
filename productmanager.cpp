@@ -29,6 +29,8 @@ ProductManager::ProductManager(QWidget *parent) :
         }
     }
     file.close();
+
+    setWindowTitle(tr("Product Side"));
 }
 
 ProductManager::~ProductManager()
@@ -211,6 +213,15 @@ void ProductManager::on_pushButton_3_clicked()
     updateCliList << userId << userName << userCall << userAddress << userGender;
     qDebug("수정 버튼 클릭");
     emit updateBtnClicked(updateCliList);
+}
+
+//회원 삭제
+void ProductManager::on_pushButton_5_clicked()
+{
+    QString userId;
+    userId = ui->lineEdit_6->text();
+
+    emit deleteBtnClicked(userId);
 }
 
 //회원 정보 수정 시 우측 라인Edit을 비우고 리스트를 새롭게 load하기 위해 비운다.

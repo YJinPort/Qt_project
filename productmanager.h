@@ -40,6 +40,8 @@ private slots:
     int updateAfterUpCount(QString, int);
     void updateAfterDownCount(QString, int);
 
+    void on_pushButton_5_clicked();
+
 private:
     Ui::ProductManager *ui;
 
@@ -49,6 +51,7 @@ signals:
     void quitProduct();
     void sendProductInfo(Product*);
     void updateBtnClicked(QStringList);
+    void deleteBtnClicked(QString);
 };
 
 #endif // PRODUCTMANAGER_H

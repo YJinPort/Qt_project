@@ -25,7 +25,11 @@ private slots:
     void containClientInfo();
     void checkLoginId(QString);
     void updateClientInfo(QStringList);
+    void deleteClientInfo(QString);
     QString findAddressForOrder(QString);
+    int deleteId_List(QString);
+
+    void serverOpenFromShopping();
 
 private:
     Ui::ClientManager *ui;
@@ -40,6 +44,8 @@ signals:
     void successLogin(QString);
     void failedLogin();
     void clear_Widget_N_LineEdit();
+
+    void sendToServer(int, QString);
 };
 
 #endif // CLIENTMANAGER_H

@@ -27,7 +27,9 @@ ClientManager::ClientManager(QWidget *parent) :
 
     file.close( );
 
-    //ui->treeWidget->hide();
+    emit
+
+    setWindowTitle(tr("Client Side"));
 }
 
 ClientManager::~ClientManager()
@@ -116,6 +118,20 @@ void ClientManager::on_pushButton_clicked()
     //errorMessage->exec();
 }
 
+//회원 탈퇴 시 해당 아이디 검색 후 List에서 삭제
+int ClientManager::deleteId_List(QString id) {
+    int cnt = 0;
+    Q_FOREACH(auto v, clientList) {
+        Client *c = static_cast<Client*>(v);
+        if(id == c->getUserID()) {
+            clientList.remove(c->userCount());
+            cnt++;
+            break;
+        }
+    }
+    return cnt;
+}
+
 //회원 정보를 담아서 보내기
 void ClientManager::containClientInfo() {
     QString userId, name, call, address, gender;
@@ -189,6 +205,31 @@ void ClientManager::updateClientInfo(QStringList updateList) {
     }
 }
 
+//등록된 회원 삭제
+void ClientManager::deleteClientInfo(QString userId) {
+    bool checkUser = true;
+    Q_FOREACH(auto v, clientList) {
+        Client *c = static_cast<Client*>(v);
+        if(userId == c->getUserID()) {
+            clientList.remove(c->userCount());
+            QMessageBox::information(this, tr("삭제 성공"), tr("회원 삭제가 완료되었습니다."));
+            checkUser = false;
+            break;
+        }
+    }
+
+    if(checkUser) QMessageBox::information(this, tr("삭제 실패"), tr("회원 아이디를 확인해주세요."));
+    else {
+        emit clear_Widget_N_LineEdit();
+
+        Q_FOREACH(auto v, clientList) {
+            Client *c = static_cast<Client*>(v);
+            Client *item = new Client(c->userCount(), c->getUserID(), c->getName(), c->getPhoneNumber(), c->getAddress(), c->get_Gender());
+            emit sendClientInfo(item);
+        }
+    }
+}
+
 QString ClientManager::findAddressForOrder(QString orderName) {
     QString orderAddress;
     Q_FOREACH(auto v, clientList) {
@@ -200,4 +241,17 @@ QString ClientManager::findAddressForOrder(QString orderName) {
     }
 
     return orderAddress;
+}
+
+void ClientManager::serverOpenFromShopping() {
+    qDebug("serverOpenFromShopping");
+    QString sendSeverName;
+    int sendServerId;
+    Q_FOREACH(auto v, clientList) {
+        sendServerId = v->getUserID().toInt();
+        sendSeverName = v->getName();
+        emit sendToServer(sendServerId, sendSeverName);
+        qDebug("sendToServer");
+    }
+
 }

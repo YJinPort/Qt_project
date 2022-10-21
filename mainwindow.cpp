@@ -3,6 +3,7 @@
 #include "clientmanager.h"
 #include "productmanager.h"
 #include "shoppingmanager.h"
+#include "serverside.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -15,6 +16,7 @@ MainWindow::MainWindow(QWidget *parent)
     shoppingManager = new ShoppingManager(this);
     clientManager = new ClientManager(this);
     productManager = new ProductManager(this);
+    //server = new ServerSide();
 
     ui->mdiArea->addSubWindow(shoppingManager);
     ui->mdiArea->addSubWindow(clientManager);
@@ -30,6 +32,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(shoppingManager, SIGNAL(takeOrderSign(QString)), clientManager, SLOT(findAddressForOrder(QString)));
     connect(shoppingManager, SIGNAL(updateAfter_upCount(QString, int)), productManager, SLOT(updateAfterUpCount(QString, int)));
     connect(shoppingManager, SIGNAL(updateAfter_downCount(QString, int)), productManager, SLOT(updateAfterDownCount(QString, int)));
+    connect(shoppingManager, SIGNAL(deleteClient(QString)), clientManager, SLOT(deleteId_List(QString)));
+    connect(shoppingManager, SIGNAL(serverBtnClicked()), clientManager, SLOT(serverOpenFromShopping()));
 
     connect(clientManager, SIGNAL(cancellation()), this, SLOT(cancellationClient()));
     connect(clientManager, SIGNAL(join()), this, SLOT(joinClient()));
@@ -37,10 +41,16 @@ MainWindow::MainWindow(QWidget *parent)
     connect(clientManager, SIGNAL(successLogin(QString)), shoppingManager, SLOT(successLoginCheck(QString)));
     connect(clientManager, SIGNAL(failedLogin()), shoppingManager, SLOT(failedLoginCheck()));
     connect(clientManager, SIGNAL(clear_Widget_N_LineEdit()), productManager, SLOT(clearClientWidget_N_LineEdit()));
+    connect(clientManager, SIGNAL(sendToServer(int, QString)), server, SLOT(addClient(int, QString)));
+    //client -> shopping
+    //connect(client, signal, shopping, signal2)
+
+    //connect(this, signal2, server, slot(addclient));
 
     connect(productManager, SIGNAL(quitProduct()), this, SLOT(quitProductWindow()));
     connect(productManager, SIGNAL(sendProductInfo(Product*)), shoppingManager, SLOT(receivedProductInfo(Product*)));
     connect(productManager, SIGNAL(updateBtnClicked(QStringList)), clientManager, SLOT(updateClientInfo(QStringList)));
+    connect(productManager, SIGNAL(deleteBtnClicked(QString)), clientManager, SLOT(deleteClientInfo(QString)));
 
     shoppingManager->dataLoad();
 }

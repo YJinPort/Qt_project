@@ -2,6 +2,8 @@
 #include "ui_shoppingmanager.h"
 #include "shopping.h"
 #include "product.h"
+#include "chattingform_client.h"
+#include "serverside.h"
 
 #include <QInputDialog>
 #include <QMessageBox>
@@ -32,6 +34,8 @@ ShoppingManager::ShoppingManager(QWidget *parent) :
         }
     }
     file.close();
+
+    setWindowTitle(tr("Shopping Side"));
 }
 
 void ShoppingManager::dataLoad() {
@@ -75,6 +79,29 @@ void ShoppingManager::on_pushButton_clicked()
     emit newClient();
 }
 
+//회원탈퇴
+void ShoppingManager::on_pushButton_9_clicked()
+{
+    bool questionCheck, inputUserId;
+    int checkUserId;
+    QString question, userId;
+
+    do {
+        question = QInputDialog::getText(this, "회원 탈퇴", "탈퇴하시겠습니까? (입력: 회원탈퇴)", QLineEdit::Normal, NULL, &questionCheck);
+        if(questionCheck == false) break;
+    } while(question.trimmed() != "회원탈퇴");
+
+    if(question.trimmed() == "회원탈퇴") {
+        do {
+            userId = QInputDialog::getText(this, "Manager", "회원 아이디를 입력해주세요.", QLineEdit::Normal, NULL, &inputUserId);
+            if(inputUserId == false) break;
+            checkUserId = emit deleteClient(userId);
+            if(checkUserId <= 0) QMessageBox::warning(this, tr("탈퇴 실패"), tr("존재하지 않는 아이디 입니다."));
+            else QMessageBox::warning(this, tr("탈퇴 성공"), tr("회원 탈퇴되었습니다."));
+        } while(checkUserId <= 0);
+    }
+}
+
 //회원정보, 제품정보 관리
 void ShoppingManager::on_pushButton_6_clicked()
 {
@@ -84,7 +111,7 @@ void ShoppingManager::on_pushButton_6_clicked()
     do {
         passwd = QInputDialog::getText(this, "Manager", "관리자 번호를 입력하세요.", QLineEdit::Normal, NULL, &ok);
         if(ok == false) break;
-    } while(ok != true || passwd != "ossmall");
+    } while(/*ok != true || */passwd.trimmed() != "ossmall");
 
     if(ok == true) {
         emit viewClientList();
@@ -279,4 +306,32 @@ void ShoppingManager::receivedProductInfo(Product *p) {
     ui->treeWidget->addTopLevelItem(p);
 }
 
+//채팅하기
+void ShoppingManager::on_pushButton_8_clicked()
+{
+    ChattingForm_Client *clientForm = new ChattingForm_Client();
+    //clientForm = new ChattingForm_Client();
+    clientForm->show();
+}
 
+//서버오픈
+void ShoppingManager::on_pushButton_10_clicked()
+{
+    bool ok;
+    QString passwd;
+
+    do {
+        passwd = QInputDialog::getText(this, "Manager", "관리자 번호를 입력하세요.", QLineEdit::Normal, NULL, &ok);
+        if(ok == false) break;
+    } while(/*ok != true || */passwd.trimmed() != "ossmall");
+
+    qDebug("serverBtnClicked");
+//    emit serverBtnClicked();
+
+    if(ok == true) {
+        ServerSide *serverForm = new ServerSide();
+        emit serverBtnClicked();
+        serverForm->show();
+        //ui->pushButton_10->setDisabled(true);
+    }
+}
