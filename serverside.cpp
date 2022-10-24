@@ -150,7 +150,8 @@ void ServerSide::receiveData( )
         QTreeWidgetItem* item = new QTreeWidgetItem(ui->messageTreeWidget);
         item->setText(0, ip);
         item->setText(1, QString::number(port));
-        item->setText(2, QString::number(clientIDHash[clientNameHash[port]]));
+        //item->setText(2, QString::number(clientIDHash[clientNameHash[port]]));
+        item->setText(2, clientIDHash[clientNameHash[port]]);
         item->setText(3, clientNameHash[port]);
         item->setText(4, QString(data));
         item->setText(5, QDateTime::currentDateTime().toString());
@@ -195,7 +196,7 @@ void ServerSide::removeClient()
     }
 }
 
-void ServerSide::addClient(int id, QString name)
+void ServerSide::addClient(QString id, QString name)
 {
     qDebug("addClient");
     QTreeWidgetItem* item = new QTreeWidgetItem(ui->clientTreeWidget);
@@ -280,7 +281,8 @@ void ServerSide::readClient()
         QTreeWidgetItem* item = new QTreeWidgetItem(ui->messageTreeWidget);
         item->setText(0, ip);
         item->setText(1, QString::number(port));
-        item->setText(2, QString::number(clientIDHash[name]));
+        //item->setText(2, QString::number(clientIDHash[name]));
+        item->setText(2, clientIDHash[name]);
         item->setText(3, name);
         item->setText(4, filename);
         item->setText(5, QDateTime::currentDateTime().toString());

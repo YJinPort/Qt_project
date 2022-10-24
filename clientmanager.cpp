@@ -4,6 +4,7 @@
 #include <QMessageBox>
 #include <QFile>
 
+//생성자 - clientlist.txt에 저장된 정보를 불러와 사용자리스트에 저장한다.
 ClientManager::ClientManager(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::ClientManager)
@@ -27,11 +28,10 @@ ClientManager::ClientManager(QWidget *parent) :
 
     file.close( );
 
-    emit
-
     setWindowTitle(tr("Client Side"));
 }
 
+//소멸자 - 사용자리스트에 저장된 정보를 clientlist.txt에 저장한다.
 ClientManager::~ClientManager()
 {
     delete ui;
@@ -52,6 +52,7 @@ ClientManager::~ClientManager()
     file.close( );
 }
 
+//회원 수를 자동으로 생성하여 전달해주기 위한 함수
 int ClientManager::userCount() {
     if(clientList.size() == 0) return 1;
     else {
@@ -60,41 +61,29 @@ int ClientManager::userCount() {
     }
 }
 
-//등록 취소
-void ClientManager::on_pushButton_2_clicked()
+//회원 등록 버튼 클릭 시 동작
+void ClientManager::on_clientRegisterPushButton_clicked()
 {
-    ui->checkBox->setChecked(false);
-    ui->checkBox_2->setChecked(false);
-    ui->lineEdit->clear();
-    ui->lineEdit_2->clear();
-    ui->lineEdit_3->clear();
-    ui->lineEdit_4->clear();
-    emit cancellation();
-}
-
-//회원 등록
-void ClientManager::on_pushButton_clicked()
-{
-    if(ui->lineEdit->text().trimmed() == "") {
+    if(ui->userIdLineEdit->text().trimmed() == "") {
         QMessageBox::warning(this, tr("가입 실패"), tr("아이디를 입력하여 주세요."));
     }
-    else if(ui->lineEdit_2->text().trimmed() == "") {
+    else if(ui->userNameLineEdit->text().trimmed() == "") {
         QMessageBox::warning(this, tr("가입 실패"), tr("성함을 입력하여 주세요."));
     }
-    else if(ui->lineEdit_4->text().trimmed() == "") {
+    else if(ui->userAddressLineEdit->text().trimmed() == "") {
         QMessageBox::warning(this, tr("가입 실패"), tr("주소를 입력하여 주세요."));
     }
-    else if(ui->checkBox->isChecked() == false || ui->checkBox_2->isChecked() == false) {
+    else if(ui->agreeClientInfoCheckBox->isChecked() == false || ui->agreeAddressCheckBox->isChecked() == false) {
         QMessageBox::warning(this, tr("가입 실패"), tr("정보 수집을 동의하여 주세요"));
     }
     else {
         QString userId, name, call, address, gender;
         int ucnt = userCount();
-        userId = ui->lineEdit->text();
-        name = ui->lineEdit_2->text();
-        call = ui->lineEdit_3->text();
-        address = ui->lineEdit_4->text();
-        gender = ui->comboBox->currentText();
+        userId = ui->userIdLineEdit->text();
+        name = ui->userNameLineEdit->text();
+        call = ui->userCallLineEdit->text();
+        address = ui->userAddressLineEdit->text();
+        gender = ui->userGenderComboBox->currentText();
 
         if(userId.length()) {
             Client *c = new Client(ucnt, userId, name, call, address, gender);
@@ -107,65 +96,29 @@ void ClientManager::on_pushButton_clicked()
         qDebug() << "주소: " << address;
         qDebug() << "성별: " << gender;
 
-        ui->checkBox->setChecked(false);
-        ui->checkBox_2->setChecked(false);
-        ui->lineEdit->clear();
-        ui->lineEdit_2->clear();
-        ui->lineEdit_3->clear();
-        ui->lineEdit_4->clear();
+        ui->agreeClientInfoCheckBox->setChecked(false);
+        ui->agreeAddressCheckBox->setChecked(false);
+        ui->userIdLineEdit->clear();
+        ui->userNameLineEdit->clear();
+        ui->userCallLineEdit->clear();
+        ui->userAddressLineEdit->clear();
         emit join();
     }
-    //errorMessage->exec();
 }
 
-//회원 탈퇴 시 해당 아이디 검색 후 List에서 삭제
-int ClientManager::deleteId_List(QString id) {
-    int cnt = 0;
-    Q_FOREACH(auto v, clientList) {
-        Client *c = static_cast<Client*>(v);
-        if(id == c->getUserID()) {
-            clientList.remove(c->userCount());
-            cnt++;
-            break;
-        }
-    }
-    return cnt;
+//등록 취소 버튼 클릭 시 동작
+void ClientManager::on_cancelRegisterPushButton_clicked()
+{
+    ui->agreeClientInfoCheckBox->setChecked(false);
+    ui->agreeAddressCheckBox->setChecked(false);
+    ui->userIdLineEdit->clear();
+    ui->userNameLineEdit->clear();
+    ui->userCallLineEdit->clear();
+    ui->userAddressLineEdit->clear();
+    emit cancellation();
 }
 
-//회원 정보를 담아서 보내기
-void ClientManager::containClientInfo() {
-    QString userId, name, call, address, gender;
-    int ucnt;
-
-    Q_FOREACH(auto v, clientList) {
-        Client *c = static_cast<Client*>(v);
-        ucnt = c->userCount();
-        userId = c->getUserID();
-        name = c->getName();
-        call = c->getPhoneNumber();
-        address = c->getAddress();
-        gender = c->get_Gender();
-        Client *item = new Client(ucnt, userId, name, call, address, gender);
-        emit sendClientInfo(item);
-    }
-}
-
-//로그인 시도 시 아이디가 등록되어 있는지 체크
-void ClientManager::checkLoginId(QString str) {
-    QString userId = "";
-    Q_FOREACH(auto v, clientList) {
-        Client *c = static_cast<Client*>(v);
-        if(str == c->getUserID()) {
-            userId = c->getUserID();
-            emit successLogin(c->getName());
-            break;
-        }
-    }
-
-    if(userId != str) emit failedLogin();
-}
-
-//회원 정보 리스트에 등록된 회원 정보를 변경
+//관리자 페이지에서 회원 정보 수정 시 회원 정보 리스트에 등록된 회원 정보를 변경하기 위한 SLOT 함수
 void ClientManager::updateClientInfo(QStringList updateList) {
     int userCount;
     bool checkUser = true;
@@ -205,7 +158,7 @@ void ClientManager::updateClientInfo(QStringList updateList) {
     }
 }
 
-//등록된 회원 삭제
+//관리자 페이지에서 회원 삭제 시 등록된 회원을 삭제하기 위한 SLOT 함수
 void ClientManager::deleteClientInfo(QString userId) {
     bool checkUser = true;
     Q_FOREACH(auto v, clientList) {
@@ -230,6 +183,40 @@ void ClientManager::deleteClientInfo(QString userId) {
     }
 }
 
+//쇼핑 화면에서 관리자 페이지로 이동 버튼 클릭 시 회원 정보를 담아서 보내기 위한 SLOT 함수
+void ClientManager::containClientInfo() {
+    QString userId, name, call, address, gender;
+    int ucnt;
+
+    Q_FOREACH(auto v, clientList) {
+        Client *c = static_cast<Client*>(v);
+        ucnt = c->userCount();
+        userId = c->getUserID();
+        name = c->getName();
+        call = c->getPhoneNumber();
+        address = c->getAddress();
+        gender = c->get_Gender();
+        Client *item = new Client(ucnt, userId, name, call, address, gender);
+        emit sendClientInfo(item);
+    }
+}
+
+//쇼핑 화면에서 로그인 시도 시 아이디가 등록되어 있는지 체크하는 SLOT 함수
+void ClientManager::checkLoginId(QString str) {
+    QString userId = "";
+    Q_FOREACH(auto v, clientList) {
+        Client *c = static_cast<Client*>(v);
+        if(str == c->getUserID()) {
+            userId = c->getUserID();
+            emit successLogin(c->getName());
+            break;
+        }
+    }
+
+    if(userId != str) emit failedLogin();
+}
+
+//쇼핑 화면에서 주문하기 버튼 클릭 시 주문자의 주소 정보를 찾아주기 위한 SLOT 함수
 QString ClientManager::findAddressForOrder(QString orderName) {
     QString orderAddress;
     Q_FOREACH(auto v, clientList) {
@@ -243,15 +230,32 @@ QString ClientManager::findAddressForOrder(QString orderName) {
     return orderAddress;
 }
 
+//쇼핑 화면에서 회원 탈퇴 버튼 클릭 시 해당 아이디 검색 후 List에서 삭제하기 위한 SLOT 함수
+int ClientManager::deleteId_List(QString id) {
+    int cnt = 0;
+    Q_FOREACH(auto v, clientList) {
+        Client *c = static_cast<Client*>(v);
+        if(id == c->getUserID()) {
+            clientList.remove(c->userCount());
+            cnt++;
+            break;
+        }
+    }
+    return cnt;
+}
+
+//쇼핑 화면에서 서버오픈 시 사용자의 ID와 이름을 전달해주기 위한 SLOT 함수
 void ClientManager::serverOpenFromShopping() {
     qDebug("serverOpenFromShopping");
     QString sendSeverName;
-    int sendServerId;
+    //int sendServerId;
+    QString sendServerId;
     Q_FOREACH(auto v, clientList) {
-        sendServerId = v->getUserID().toInt();
+        //sendServerId = v->getUserID().toInt();
+        sendServerId = v->getUserID();
         sendSeverName = v->getName();
+        qDebug() << sendServerId;
         emit sendToServer(sendServerId, sendSeverName);
         qDebug("sendToServer");
     }
-
 }

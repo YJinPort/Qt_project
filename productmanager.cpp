@@ -24,7 +24,7 @@ ProductManager::ProductManager(QWidget *parent) :
             int price = row[2].toInt();
             int count = row[3].toInt();
             Product* p = new Product(number, row[1], price, count, row[4]);
-            ui->treeWidget->addTopLevelItem(p);
+            ui->productListTreeWidget->addTopLevelItem(p);
             productList.insert(number, p);
         }
     }
@@ -53,22 +53,22 @@ ProductManager::~ProductManager()
 }
 
 //제품 등록/변경
-void ProductManager::on_pushButton_clicked()
+void ProductManager::on_productRegisterPushButton_clicked()
 {
-    if(ui->lineEdit->text().trimmed() == "") QMessageBox::warning(this, tr("등록 실패"), tr("제품 번호를 입력하여 주세요."));
-    else if(ui->lineEdit_2->text().trimmed() == "") QMessageBox::warning(this, tr("등록 실패"), tr("제품명을 입력하여 주세요."));
-    else if(ui->lineEdit_3->text().trimmed() == "") QMessageBox::warning(this, tr("등록 실패"), tr("제품 가격을 입력하여 주세요."));
-    else if(ui->lineEdit_4->text().trimmed() == "") QMessageBox::warning(this, tr("등록 실패"), tr("제품 수량을 입력하여 주세요."));
+    if(ui->productNumberLineEdit->text().trimmed() == "") QMessageBox::warning(this, tr("등록 실패"), tr("제품 번호를 입력하여 주세요."));
+    else if(ui->productNameLineEdit->text().trimmed() == "") QMessageBox::warning(this, tr("등록 실패"), tr("제품명을 입력하여 주세요."));
+    else if(ui->productPriceLineEdit->text().trimmed() == "") QMessageBox::warning(this, tr("등록 실패"), tr("제품 가격을 입력하여 주세요."));
+    else if(ui->productCountLineEdit->text().trimmed() == "") QMessageBox::warning(this, tr("등록 실패"), tr("제품 수량을 입력하여 주세요."));
     else {
         int proNumber, proPrice, proCount;
         QString proName, proType;
         bool newNum = true;
 
-        proNumber = ui->lineEdit->text().toInt();
-        proName = ui->lineEdit_2->text();
-        proPrice = ui->lineEdit_3->text().toInt();
-        proCount = ui->lineEdit_4->text().toInt();
-        proType = ui->lineEdit_5->text();
+        proNumber = ui->productNumberLineEdit->text().toInt();
+        proName = ui->productNameLineEdit->text();
+        proPrice = ui->productPriceLineEdit->text().toInt();
+        proCount = ui->productCountLineEdit->text().toInt();
+        proType = ui->productTypeLineEdit->text();
 
         Q_FOREACH(auto v, productList) {
             Product *p = static_cast<Product*>(v);
@@ -80,12 +80,12 @@ void ProductManager::on_pushButton_clicked()
                 p->setProType(proType);
 
                 //ui의 treeWidget에 입력되어있는 기존의 값을 삭제한다.
-                ui->treeWidget->takeTopLevelItem(ui->treeWidget->indexOfTopLevelItem(p));
-                ui->treeWidget->update();
+                ui->productListTreeWidget->takeTopLevelItem(ui->productListTreeWidget->indexOfTopLevelItem(p));
+                ui->productListTreeWidget->update();
 
                 //변경한 값을 제품리스트에 입력한다.(QMap의 경우 Id의 중복을 방지한다)
                 productList.insert(proNumber, p);
-                ui->treeWidget->addTopLevelItem(p);     //변경한 입력값을 ui의 treeWidget에 등록한다.
+                ui->productListTreeWidget->addTopLevelItem(p);     //변경한 입력값을 ui의 treeWidget에 등록한다.
 
                 newNum = false;                 //이미 등록된 제품 번호가 존재하므로 newNum을 false로 설정한다.
 
@@ -98,37 +98,37 @@ void ProductManager::on_pushButton_clicked()
         if(newNum) {
             Product *p = new Product(proNumber, proName, proPrice, proCount, proType);
             productList.insert(proNumber, p);       //새로운 제품의 값을 제품리스트에 입력한다.
-            ui->treeWidget->addTopLevelItem(p);     //입력된 값을 ui의 treeWidget에 등록한다.
+            ui->productListTreeWidget->addTopLevelItem(p);     //입력된 값을 ui의 treeWidget에 등록한다.
             QMessageBox::information(this, tr("등록 성공"), tr("새로운 제품이 등록되었습니다."));
         }
 
-        ui->lineEdit->clear();
-        ui->lineEdit_2->clear();
-        ui->lineEdit_3->clear();
-        ui->lineEdit_4->clear();
-        ui->lineEdit_5->clear();
+        ui->productNumberLineEdit->clear();
+        ui->productNameLineEdit->clear();
+        ui->productPriceLineEdit->clear();
+        ui->productCountLineEdit->clear();
+        ui->productTypeLineEdit->clear();
     }
 }
 
 //제품 삭제
-void ProductManager::on_pushButton_4_clicked()
+void ProductManager::on_productRemovePushButton_clicked()
 {
-    int proNumber = ui->lineEdit->text().toInt();
+    int proNumber = ui->productNumberLineEdit->text().toInt();
     int cnt = 0;
 
-    if(ui->lineEdit->text().trimmed() != "") {
+    if(ui->productNumberLineEdit->text().trimmed() != "") {
         Q_FOREACH(auto v, productList) {
             Product *p = static_cast<Product*>(v);
             if(proNumber == p->getProNumber()) {
                 productList.remove(proNumber);
-                ui->treeWidget->takeTopLevelItem(ui->treeWidget->indexOfTopLevelItem(p));
-                ui->treeWidget->update();
+                ui->productListTreeWidget->takeTopLevelItem(ui->productListTreeWidget->indexOfTopLevelItem(p));
+                ui->productListTreeWidget->update();
                 QMessageBox::warning(this, tr("삭제 성공"), tr("제품 삭제를 완료하였습니다."));
-                ui->lineEdit->clear();
-                ui->lineEdit_2->clear();
-                ui->lineEdit_3->clear();
-                ui->lineEdit_4->clear();
-                ui->lineEdit_5->clear();
+                ui->productNumberLineEdit->clear();
+                ui->productNameLineEdit->clear();
+                ui->productPriceLineEdit->clear();
+                ui->productCountLineEdit->clear();
+                ui->productTypeLineEdit->clear();
                 cnt++;
                 break;
             }
@@ -139,22 +139,22 @@ void ProductManager::on_pushButton_4_clicked()
 }
 
 //나가기
-void ProductManager::on_pushButton_2_clicked()
+void ProductManager::on_getOutPushButton_clicked()
 {
-    ui->lineEdit->clear();
-    ui->lineEdit_2->clear();
-    ui->lineEdit_3->clear();
-    ui->lineEdit_4->clear();
-    ui->lineEdit_5->clear();
+    ui->productNumberLineEdit->clear();
+    ui->productNameLineEdit->clear();
+    ui->productPriceLineEdit->clear();
+    ui->productCountLineEdit->clear();
+    ui->productTypeLineEdit->clear();
 
-    ui->treeWidget_2->clear();      //회원 정보 리스트의 중복 출력 방지를 위해 트리위젯을 초기화
+    ui->clientListTreeWidget->clear();      //회원 정보 리스트의 중복 출력 방지를 위해 트리위젯을 초기화
 
     emit quitProduct();
 }
 
 //회원 정보 리스트 출력
 void ProductManager::receivedClientInfo(Client *c) {
-    ui->treeWidget_2->addTopLevelItem(c);
+    ui->clientListTreeWidget->addTopLevelItem(c);
 }
 
 //제품 정보를 담아서 보내기(Shopping으로 보내기)
@@ -176,38 +176,38 @@ void ProductManager::containProductInfo() {
 }
 
 //제품 위젯에서 해당 제품을 클릭했을 경우 우측 라인Edit에 표시
-void ProductManager::on_treeWidget_itemClicked(QTreeWidgetItem *item, int column)
+void ProductManager::on_productListTreeWidget_itemClicked(QTreeWidgetItem *item, int column)
 {
     Q_UNUSED(column);
 
-    ui->lineEdit->setText(item->text(0));
-    ui->lineEdit_2->setText(item->text(1));
-    ui->lineEdit_3->setText(item->text(2));
-    ui->lineEdit_4->setText(item->text(3));
-    ui->lineEdit_5->setText(item->text(4));
+    ui->productNumberLineEdit->setText(item->text(0));
+    ui->productNameLineEdit->setText(item->text(1));
+    ui->productPriceLineEdit->setText(item->text(2));
+    ui->productCountLineEdit->setText(item->text(3));
+    ui->productTypeLineEdit->setText(item->text(4));
 }
 
 //회원 위젯에서 해당 회원을 클릭했을 경우 우측 라인Edit에 표시
-void ProductManager::on_treeWidget_2_itemClicked(QTreeWidgetItem *item, int column)
+void ProductManager::on_clientListTreeWidget_itemClicked(QTreeWidgetItem *item, int column)
 {
     Q_UNUSED(column);
 
-    ui->lineEdit_6->setText(item->text(1));
-    ui->lineEdit_7->setText(item->text(2));
-    ui->lineEdit_8->setText(item->text(3));
-    ui->lineEdit_9->setText(item->text(4));
-    ui->lineEdit_10->setText(item->text(5));
+    ui->userIdLineEdit->setText(item->text(1));
+    ui->userNameLineEdit->setText(item->text(2));
+    ui->userCallLineEdit->setText(item->text(3));
+    ui->userAddressLineEdit->setText(item->text(4));
+    ui->userGenderLineEdit->setText(item->text(5));
 }
 
 //회원 정보 수정
-void ProductManager::on_pushButton_3_clicked()
+void ProductManager::on_clientUpdatePushButton_clicked()
 {
     QString userId, userName, userCall, userAddress, userGender;
-    userId = ui->lineEdit_6->text();
-    userName = ui->lineEdit_7->text();
-    userCall = ui->lineEdit_8->text();
-    userAddress = ui->lineEdit_9->text();
-    userGender = ui->lineEdit_10->text();
+    userId = ui->userIdLineEdit->text();
+    userName = ui->userNameLineEdit->text();
+    userCall = ui->userCallLineEdit->text();
+    userAddress = ui->userAddressLineEdit->text();
+    userGender = ui->userGenderLineEdit->text();
 
     QStringList updateCliList;
     updateCliList << userId << userName << userCall << userAddress << userGender;
@@ -216,23 +216,23 @@ void ProductManager::on_pushButton_3_clicked()
 }
 
 //회원 삭제
-void ProductManager::on_pushButton_5_clicked()
+void ProductManager::on_clientRemovePushButton_clicked()
 {
     QString userId;
-    userId = ui->lineEdit_6->text();
+    userId = ui->userIdLineEdit->text();
 
     emit deleteBtnClicked(userId);
 }
 
 //회원 정보 수정 시 우측 라인Edit을 비우고 리스트를 새롭게 load하기 위해 비운다.
 void ProductManager::clearClientWidget_N_LineEdit() {
-    ui->lineEdit_6->clear();
-    ui->lineEdit_7->clear();
-    ui->lineEdit_8->clear();
-    ui->lineEdit_9->clear();
-    ui->lineEdit_10->clear();
+    ui->userIdLineEdit->clear();
+    ui->userNameLineEdit->clear();
+    ui->userCallLineEdit->clear();
+    ui->userAddressLineEdit->clear();
+    ui->userGenderLineEdit->clear();
 
-    ui->treeWidget_2->clear();
+    ui->clientListTreeWidget->clear();
 }
 
 //쇼핑에서 주문하기 or 주문변경 시 재고 확인 및 관리

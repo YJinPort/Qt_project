@@ -41,9 +41,9 @@ MainWindow::MainWindow(QWidget *parent)
     connect(clientManager, SIGNAL(successLogin(QString)), shoppingManager, SLOT(successLoginCheck(QString)));
     connect(clientManager, SIGNAL(failedLogin()), shoppingManager, SLOT(failedLoginCheck()));
     connect(clientManager, SIGNAL(clear_Widget_N_LineEdit()), productManager, SLOT(clearClientWidget_N_LineEdit()));
-    connect(clientManager, SIGNAL(sendToServer(int, QString)), server, SLOT(addClient(int, QString)));
+    //connect(clientManager, SIGNAL(sendToServer(int, QString)), server, SLOT(addClient(int, QString)));
     //client -> shopping
-    //connect(client, signal, shopping, signal2)
+    connect(clientManager, SIGNAL(sendToServer(QString, QString)), shoppingManager, SLOT(clientSignalReceived(QString, QString)));
 
     //connect(this, signal2, server, slot(addclient));
 

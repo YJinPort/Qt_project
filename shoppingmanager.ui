@@ -32,7 +32,7 @@
         </spacer>
        </item>
        <item>
-        <widget class="QLabel" name="label">
+        <widget class="QLabel" name="mainShoppingLabel">
          <property name="maximumSize">
           <size>
            <width>16777215</width>
@@ -83,7 +83,7 @@
         </spacer>
        </item>
        <item>
-        <widget class="QLineEdit" name="lineEdit">
+        <widget class="QLineEdit" name="userIdLoginLineEdit">
          <property name="maximumSize">
           <size>
            <width>200</width>
@@ -93,7 +93,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="pushButton_2">
+        <widget class="QPushButton" name="shoppingLoginPushButton">
          <property name="maximumSize">
           <size>
            <width>16777215</width>
@@ -106,7 +106,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="pushButton">
+        <widget class="QPushButton" name="addNewClientPushButton">
          <property name="maximumSize">
           <size>
            <width>16777215</width>
@@ -119,7 +119,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="pushButton_9">
+        <widget class="QPushButton" name="removeClientPushButton">
          <property name="maximumSize">
           <size>
            <width>16777215</width>
@@ -159,7 +159,7 @@
             </spacer>
            </item>
            <item>
-            <widget class="QLabel" name="label_3">
+            <widget class="QLabel" name="productInfoLabel">
              <property name="maximumSize">
               <size>
                <width>16777215</width>
@@ -198,7 +198,7 @@
           </layout>
          </item>
          <item>
-          <widget class="QTreeWidget" name="treeWidget">
+          <widget class="QTreeWidget" name="productInfoTreeWidget">
            <property name="font">
             <font>
              <pointsize>11</pointsize>
@@ -272,7 +272,7 @@
             </spacer>
            </item>
            <item>
-            <widget class="QLabel" name="label_2">
+            <widget class="QLabel" name="orderListLabel">
              <property name="maximumSize">
               <size>
                <width>16777215</width>
@@ -309,7 +309,7 @@
             </spacer>
            </item>
            <item>
-            <widget class="QPushButton" name="pushButton_8">
+            <widget class="QPushButton" name="chatClientPushButton">
              <property name="maximumSize">
               <size>
                <width>80</width>
@@ -322,7 +322,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="pushButton_10">
+            <widget class="QPushButton" name="chatServerPushButton">
              <property name="maximumSize">
               <size>
                <width>80</width>
@@ -337,7 +337,7 @@
           </layout>
          </item>
          <item>
-          <widget class="QTreeWidget" name="treeWidget_3">
+          <widget class="QTreeWidget" name="orderListTreeWidget">
            <property name="contextMenuPolicy">
             <enum>Qt::ActionsContextMenu</enum>
            </property>
@@ -380,7 +380,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="pushButton_3">
+          <widget class="QPushButton" name="takeOrderPushButton">
            <property name="text">
             <string>주문하기(Take Order)</string>
            </property>
@@ -389,14 +389,14 @@
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout">
            <item>
-            <widget class="QPushButton" name="pushButton_5">
+            <widget class="QPushButton" name="updateOrderPushButton">
              <property name="text">
               <string>주문변경(Change)</string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="pushButton_4">
+            <widget class="QPushButton" name="cancelOrderPushButton">
              <property name="text">
               <string>주문취소(Cancel)</string>
              </property>
@@ -405,14 +405,14 @@
           </layout>
          </item>
          <item>
-          <widget class="QPushButton" name="pushButton_6">
+          <widget class="QPushButton" name="managementPushButton">
            <property name="text">
-            <string>회원/제품 정보 관리(Only Staff)</string>
+            <string>제품/회원 정보 관리(Only Staff)</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="pushButton_7">
+          <widget class="QPushButton" name="exitShoppingPushButton">
            <property name="text">
             <string>쇼핑 끝내기(Exit)</string>
            </property>

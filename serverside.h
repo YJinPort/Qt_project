@@ -43,7 +43,7 @@ private:
     QTcpServer *fileServer;
     QHash<quint16, QString> clientNameHash;
     QHash<QString, QTcpSocket*> clientSocketHash;
-    QHash<QString, int> clientIDHash;
+    QHash<QString, QString> clientIDHash;
     QMenu* menu;
     QFile* file;
     QProgressDialog* progressDialog;
@@ -59,10 +59,12 @@ private slots:
     void clientConnect( );                  /* 채팅 서버 */
     void receiveData( );
     void removeClient( );
-    void addClient(int, QString);
+    void addClient(QString, QString);
     void inviteClient();
     void kickOut();
     void on_clientTreeWidget_customContextMenuRequested(const QPoint &pos);
+
+    //void receivedClientInfo(int, QString);
 };
 
 #endif // SERVERSIDE_H

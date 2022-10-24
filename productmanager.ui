@@ -17,7 +17,7 @@
    <item>
     <layout class="QVBoxLayout" name="verticalLayout_3">
      <item>
-      <widget class="QLabel" name="label">
+      <widget class="QLabel" name="staffOnlyLabel">
        <property name="font">
         <font>
          <pointsize>30</pointsize>
@@ -36,7 +36,7 @@
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
-       <widget class="QTreeWidget" name="treeWidget">
+       <widget class="QTreeWidget" name="productListTreeWidget">
         <column>
          <property name="text">
           <string>제품 번호</string>
@@ -68,7 +68,7 @@
          <item>
           <layout class="QFormLayout" name="formLayout">
            <item row="0" column="0">
-            <widget class="QLabel" name="label_2">
+            <widget class="QLabel" name="productNumberLabel">
              <property name="font">
               <font>
                <pointsize>15</pointsize>
@@ -80,7 +80,7 @@
             </widget>
            </item>
            <item row="0" column="1">
-            <widget class="QLineEdit" name="lineEdit"/>
+            <widget class="QLineEdit" name="productNumberLineEdit"/>
            </item>
            <item row="1" column="1">
             <spacer name="verticalSpacer">
@@ -96,7 +96,7 @@
             </spacer>
            </item>
            <item row="2" column="0">
-            <widget class="QLabel" name="label_3">
+            <widget class="QLabel" name="productNameLabel">
              <property name="font">
               <font>
                <pointsize>15</pointsize>
@@ -108,7 +108,7 @@
             </widget>
            </item>
            <item row="2" column="1">
-            <widget class="QLineEdit" name="lineEdit_2"/>
+            <widget class="QLineEdit" name="productNameLineEdit"/>
            </item>
            <item row="3" column="1">
             <spacer name="verticalSpacer_2">
@@ -124,7 +124,7 @@
             </spacer>
            </item>
            <item row="4" column="0">
-            <widget class="QLabel" name="label_4">
+            <widget class="QLabel" name="productPriceLabel">
              <property name="font">
               <font>
                <pointsize>15</pointsize>
@@ -136,7 +136,7 @@
             </widget>
            </item>
            <item row="4" column="1">
-            <widget class="QLineEdit" name="lineEdit_3"/>
+            <widget class="QLineEdit" name="productPriceLineEdit"/>
            </item>
            <item row="5" column="1">
             <spacer name="verticalSpacer_3">
@@ -152,7 +152,7 @@
             </spacer>
            </item>
            <item row="6" column="0">
-            <widget class="QLabel" name="label_5">
+            <widget class="QLabel" name="productCountLabel">
              <property name="font">
               <font>
                <pointsize>15</pointsize>
@@ -164,10 +164,10 @@
             </widget>
            </item>
            <item row="6" column="1">
-            <widget class="QLineEdit" name="lineEdit_4"/>
+            <widget class="QLineEdit" name="productCountLineEdit"/>
            </item>
            <item row="8" column="1">
-            <widget class="QLineEdit" name="lineEdit_5"/>
+            <widget class="QLineEdit" name="productTypeLineEdit"/>
            </item>
            <item row="7" column="1">
             <spacer name="verticalSpacer_4">
@@ -183,7 +183,7 @@
             </spacer>
            </item>
            <item row="8" column="0">
-            <widget class="QLabel" name="label_6">
+            <widget class="QLabel" name="productTypeLabel">
              <property name="font">
               <font>
                <pointsize>15</pointsize>
@@ -212,7 +212,7 @@
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout_2">
            <item>
-            <widget class="QPushButton" name="pushButton">
+            <widget class="QPushButton" name="productRegisterPushButton">
              <property name="font">
               <font>
                <stylestrategy>PreferDefault</stylestrategy>
@@ -224,7 +224,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="pushButton_4">
+            <widget class="QPushButton" name="productRemovePushButton">
              <property name="text">
               <string>제품 삭제</string>
              </property>
@@ -241,7 +241,7 @@
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
-       <widget class="QTreeWidget" name="treeWidget_2">
+       <widget class="QTreeWidget" name="clientListTreeWidget">
         <column>
          <property name="text">
           <string>회원 순서</string>
@@ -290,7 +290,7 @@
             </widget>
            </item>
            <item row="0" column="1">
-            <widget class="QLineEdit" name="lineEdit_6"/>
+            <widget class="QLineEdit" name="userIdLineEdit"/>
            </item>
            <item row="1" column="1">
             <spacer name="verticalSpacer_5">
@@ -318,7 +318,7 @@
             </widget>
            </item>
            <item row="2" column="1">
-            <widget class="QLineEdit" name="lineEdit_7"/>
+            <widget class="QLineEdit" name="userNameLineEdit"/>
            </item>
            <item row="3" column="1">
             <spacer name="verticalSpacer_6">
@@ -346,7 +346,7 @@
             </widget>
            </item>
            <item row="4" column="1">
-            <widget class="QLineEdit" name="lineEdit_8"/>
+            <widget class="QLineEdit" name="userCallLineEdit"/>
            </item>
            <item row="5" column="1">
             <spacer name="verticalSpacer_7">
@@ -374,7 +374,7 @@
             </widget>
            </item>
            <item row="6" column="1">
-            <widget class="QLineEdit" name="lineEdit_9"/>
+            <widget class="QLineEdit" name="userAddressLineEdit"/>
            </item>
            <item row="8" column="0">
             <widget class="QLabel" name="label_11">
@@ -389,7 +389,7 @@
             </widget>
            </item>
            <item row="8" column="1">
-            <widget class="QLineEdit" name="lineEdit_10"/>
+            <widget class="QLineEdit" name="userGenderLineEdit"/>
            </item>
            <item row="7" column="1">
             <spacer name="verticalSpacer_8">
@@ -422,7 +422,7 @@
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout">
            <item>
-            <widget class="QPushButton" name="pushButton_3">
+            <widget class="QPushButton" name="clientUpdatePushButton">
              <property name="font">
               <font>
                <stylestrategy>PreferDefault</stylestrategy>
@@ -434,7 +434,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="pushButton_5">
+            <widget class="QPushButton" name="clientRemovePushButton">
              <property name="text">
               <string>회원 삭제</string>
              </property>
@@ -462,7 +462,7 @@
     </spacer>
    </item>
    <item>
-    <widget class="QPushButton" name="pushButton_2">
+    <widget class="QPushButton" name="getOutPushButton">
      <property name="text">
       <string>나가기</string>
      </property>

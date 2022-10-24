@@ -20,27 +20,19 @@ public:
     ~ProductManager();
 
 private slots:
-    void on_pushButton_clicked();
-
-    void on_pushButton_2_clicked();
+    void on_productRegisterPushButton_clicked();    //제품 등록/변경 버튼 클릭 시 동작
+    void on_productRemovePushButton_clicked();      //제품 삭제 버튼 클릭 시 동작
+    void on_clientUpdatePushButton_clicked();       //회원 정보 수정 버튼 클릭 시 동작
+    void on_clientRemovePushButton_clicked();       //회원 삭제 버튼 클릭 시 동작
+    void on_getOutPushButton_clicked();             //나가기 버튼 클릭 시 동작
 
     void receivedClientInfo(Client*);
-
     void containProductInfo();
-
-    void on_treeWidget_itemClicked(QTreeWidgetItem *item, int column);
-
-    void on_treeWidget_2_itemClicked(QTreeWidgetItem *item, int column);
-
-    void on_pushButton_4_clicked();
-
-    void on_pushButton_3_clicked();
-
+    void on_productListTreeWidget_itemClicked(QTreeWidgetItem *item, int column);
+    void on_clientListTreeWidget_itemClicked(QTreeWidgetItem *item, int column);
     void clearClientWidget_N_LineEdit();
     int updateAfterUpCount(QString, int);
     void updateAfterDownCount(QString, int);
-
-    void on_pushButton_5_clicked();
 
 private:
     Ui::ProductManager *ui;
