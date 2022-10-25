@@ -54,16 +54,17 @@ ClientManager::~ClientManager()
 
 //회원 수를 자동으로 생성하여 전달해주기 위한 함수
 int ClientManager::userCount() {
-    if(clientList.size() == 0) return 1;
+    if(clientList.size() == 0) return 1;    //회원 정보 리스트에 저장된 정보가 없으면 1을 반환한다.
     else {
-        auto cnt = clientList.lastKey();
-        return ++cnt;
+        auto cnt = clientList.lastKey();    //회원 정보 리스트에 저장된 마지막 키값을 얻는다.
+        return ++cnt;                       //얻은 키값에 1을 더한 값을 반환한다.
     }
 }
 
 //회원 등록 버튼 클릭 시 동작
 void ClientManager::on_clientRegisterPushButton_clicked()
 {
+    /*아이디, 이름, 주소를 입력 혹은 정보 수집을 동의하지 않았을 경우 경고메시지 발생*/
     if(ui->userIdLineEdit->text().trimmed() == "") {
         QMessageBox::warning(this, tr("가입 실패"), tr("아이디를 입력하여 주세요."));
     }
@@ -76,46 +77,45 @@ void ClientManager::on_clientRegisterPushButton_clicked()
     else if(ui->agreeClientInfoCheckBox->isChecked() == false || ui->agreeAddressCheckBox->isChecked() == false) {
         QMessageBox::warning(this, tr("가입 실패"), tr("정보 수집을 동의하여 주세요"));
     }
+    /*회원가입 시작*/
     else {
         QString userId, name, call, address, gender;
-        int ucnt = userCount();
+        int ucnt = userCount();     //회원 수의 경우 자동 생성 함수의 반환값을 받아온다.
+
+        /*나머지 정보의 경우 입력된 LineEdit에 적혀있는 값을 가져온다.*/
         userId = ui->userIdLineEdit->text();
         name = ui->userNameLineEdit->text();
         call = ui->userCallLineEdit->text();
         address = ui->userAddressLineEdit->text();
         gender = ui->userGenderComboBox->currentText();
 
-        if(userId.length()) {
-            Client *c = new Client(ucnt, userId, name, call, address, gender);
-            clientList.insert(ucnt, c);
-        }
-        qDebug() << "회원 수: " << ucnt;
-        qDebug() << "아이디: " << userId;
-        qDebug() << "이름: " << name;
-        qDebug() << "전화번호: " << call;
-        qDebug() << "주소: " << address;
-        qDebug() << "성별: " << gender;
+        Client *c = new Client(ucnt, userId, name, call, address, gender);
+        clientList.insert(ucnt, c);     //사용자 리스트에 회원 정보를 입력(저장)한다.
 
+        /*현재 입력 되어있는 LineEdit를 비우고 체크 되어있는 CheckBox를 체크 해제시킨다*/
         ui->agreeClientInfoCheckBox->setChecked(false);
         ui->agreeAddressCheckBox->setChecked(false);
         ui->userIdLineEdit->clear();
         ui->userNameLineEdit->clear();
         ui->userCallLineEdit->clear();
         ui->userAddressLineEdit->clear();
-        emit join();
+
+        emit join();    //쇼핑 화면으로 돌아가기 위해 SIGNAL 신호를 보낸다.
     }
 }
 
 //등록 취소 버튼 클릭 시 동작
 void ClientManager::on_cancelRegisterPushButton_clicked()
 {
+    /*현재 입력 되어있는 LineEdit를 비우고 체크 되어있는 CheckBox를 체크 해제시킨다*/
     ui->agreeClientInfoCheckBox->setChecked(false);
     ui->agreeAddressCheckBox->setChecked(false);
     ui->userIdLineEdit->clear();
     ui->userNameLineEdit->clear();
     ui->userCallLineEdit->clear();
     ui->userAddressLineEdit->clear();
-    emit cancellation();
+
+    emit cancellation();    //쇼핑 화면으로 돌아가기 위해 SIGNAL 신호를 보낸다.
 }
 
 //관리자 페이지에서 회원 정보 수정 시 회원 정보 리스트에 등록된 회원 정보를 변경하기 위한 SLOT 함수
@@ -123,27 +123,32 @@ void ClientManager::updateClientInfo(QStringList updateList) {
     int userCount;
     bool checkUser = true;
 
+    /*변경하려는 회원 정보가 리스트에 등록되어 있는 확인하기 위한 반복문*/
     Q_FOREACH(auto v, clientList) {
         Client *c = static_cast<Client*>(v);
-        if(updateList[0] == c->getUserID()) {
-            userCount = c->userCount();
+        if(updateList[0] == c->getUserID()) {   //회원 아이디가 이미 등록 되어있을 경우
+            userCount = c->userCount();     //리스트의 키값을 위한 변수에 값을 입력
+            /*현재 키값의 회원 정보를 변경될 값으로 지정한다*/
             c->setName(updateList[1]);
             c->setPhoneNumber(updateList[2]);
             c->setAddress(updateList[3]);
             c->setGender(updateList[4]);
 
-            clientList.insert(userCount, c);
-            QMessageBox::information(this, tr("수정 성공"), tr("회원 정보가 수정되었습니다."));
+            clientList.insert(userCount, c);    //사용자 리스트에 회원 정보를 입력(저장)한다.
+            checkUser = false;  //등록된 회원이라는 것이 확인되어 변경에 성공했기에 아래의 조건문을 위해 값을 변경한다.
 
-            checkUser = false;
+            QMessageBox::information(this, tr("수정 성공"), tr("회원 정보가 수정되었습니다."));     //수정에 성공했다는 메시지를 띄운다.
+
             break;
         }
     }
 
-    if(checkUser) QMessageBox::information(this, tr("수정 실패"), tr("회원 아이디를 확인해주세요."));
+    if(checkUser) QMessageBox::warning(this, tr("수정 실패"), tr("회원 아이디를 확인해주세요."));   //등록된 회원 아이디가 아니기 때문에 경고 메시지를 띄운다.
+    /*관리자 페이지의 위젯 리스트에 변경된 회원 정보를 등록 시작*/
     else {
-        emit clear_Widget_N_LineEdit();
+        emit clear_Widget_N_LineEdit();     //관리자 페이지의 회원 위젯 리스트를 비우기 위해 호출되는 신호
 
+        /*비운 위젯 리스트에 변경된 회원 정보를 등록하기 위한 반복문*/
         Q_FOREACH(auto v, clientList) {
             Client *c = static_cast<Client*>(v);
             userCount = c->userCount();
@@ -205,7 +210,7 @@ void ClientManager::containClientInfo() {
 void ClientManager::checkLoginId(QString str) {
     QString userId = "";
     Q_FOREACH(auto v, clientList) {
-        Client *c = static_cast<Client*>(v);
+        Client *c = static_cast<Client*>(v);    //auto변수 v의 자료형을 Client*형으로 변환 후 고정
         if(str == c->getUserID()) {
             userId = c->getUserID();
             emit successLogin(c->getName());
