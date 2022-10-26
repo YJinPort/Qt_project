@@ -12,26 +12,31 @@ ProductManager::ProductManager(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    QFile file("productlist.txt");
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
-        return;
+    QFile file("productlist.txt");  //productlist.txt라는 파일을 불러온다.
 
-    QTextStream in(&file);
+    /*해당 파일을 텍스트 파일의 읽기 전용으로 열기*/
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) return;  //파일을 열기에 실패하면 return;
+
+    QTextStream in(&file);  //파일의 정보를 textStream에 저장할 준비를 한다.
+
+    /*저장된 정보가 끝날 때 까지 반복*/
     while (!in.atEnd()) {
-        QString line = in.readLine();
-        QList<QString> row = line.split(", ");
-        if(row.size()) {
-            int number = row[0].toInt();
-            int price = row[2].toInt();
-            int count = row[3].toInt();
+        QString line = in.readLine();           //저장 되어있는 정보를 QString타입의 변수에 담는다.
+        QList<QString> row = line.split(", ");  //리스트 변수 row에 ", " 구분자를 제외한 데이터를 담는다.
+        if(row.size()) {    //리스트가 비어있지 않은 경우
+            int number = row[0].toInt();    //0번째 인덱스에 있는 정보를 int타입으로 변환하여 변수에 담는다.
+            int price = row[2].toInt();     //2번째 인덱스에 있는 정보를 int타입으로 변환하여 변수에 담는다.
+            int count = row[3].toInt();     //3번째 인덱스에 있는 정보를 int타입으로 변환하여 변수에 담는다.
+
+            //해당 정보를 담은 객체를 생성한다.
             Product* p = new Product(number, row[1], price, count, row[4]);
-            ui->productListTreeWidget->addTopLevelItem(p);
-            productList.insert(number, p);
+            ui->productListTreeWidget->addTopLevelItem(p);  //관리자 페이지의 제품 리스트 위젯에 출력한다.
+            productList.insert(number, p);  //정보를 담은 객체를 제품 리스트에 저장한다.
         }
     }
-    file.close();
+    file.close();   //productlist.txt파일에 저장된 정보를 모두 제품 리스트에 저장했으므로 파일을 종료한다.
 
-    setWindowTitle(tr("Product Side"));
+    setWindowTitle(tr("Product Side"));     //열리는 윈도우의 제목을 Product Side로 설정한다.
 }
 
 //소멸자 - 제품리스트에 저장된 정보를 productlist.txt에 저장한다.
@@ -39,19 +44,25 @@ ProductManager::~ProductManager()
 {
     delete ui;
 
-    QFile file("productlist.txt");
-    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
-        return;
+    QFile file("productlist.txt");  //productlist.txt라는 파일을 불러온다(없을 경우 생성한다).
 
-    QTextStream out(&file);
+    /*해당 파일을 텍스트 파일의 쓰기 전용으로 열기*/
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) return; //파일을 열기에 실패하면 return;
+
+    QTextStream out(&file); //파일의 정보를 textStream으로 출력할 준비를 한다.
+
+    /*제품 리스트에 저장된 정보를 파일에 모두 저장하기 위한 반복문*/
     for (const auto& v : productList) {
         Product* p = v;
+
+        /*제품 리스트에 대한 각 정보들을 , 를 구분자로 하여 파일(productlist.txt)에 저장한다.*/
         out << p->getProNumber() << ", " << p->getProName() << ", ";
         out << p->getProPrice() << ", ";
         out << p->getProCount() << ", ";
         out << p->getProType() << "\n";
     }
-    file.close( );
+
+    file.close( );  //productlist.txt파일로 제품 리스트에 저장된 정보를 출력해 저장했으므로 파일을 종료한다.
 }
 
 //제품 등록/변경 버튼 클릭 시 동작

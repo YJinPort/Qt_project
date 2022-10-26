@@ -1,5 +1,4 @@
 #include "chattingform_client.h"
-
 #include <QTextEdit>
 #include <QLineEdit>
 #include <QPushButton>
@@ -30,6 +29,7 @@ ChattingForm_Client::ChattingForm_Client(QWidget *parent)
     serverAddress = new QLineEdit(this);
     serverAddress->setText("127.0.0.1");
     //serverAddress->setInputMask("999.999.999.999;_");
+    /*정규 표현식 사용*/
     QRegularExpression re("^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\."
                           "(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\."
                           "(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\."
@@ -114,13 +114,15 @@ ChattingForm_Client::ChattingForm_Client(QWidget *parent)
             sendProtocol(Chat_Login, name->text().toStdString().data());
             connectButton->setText(tr("Chat in"));
             name->setReadOnly(true);
-        } else if(connectButton->text() == tr("Chat in"))  {
+        }
+        else if(connectButton->text() == tr("Chat in")) {
             sendProtocol(Chat_In, name->text().toStdString().data());
             connectButton->setText(tr("Chat Out"));
             inputLine->setEnabled(true);
             sentButton->setEnabled(true);
             fileButton->setEnabled(true);
-        } else if(connectButton->text() == tr("Chat Out"))  {
+        }
+        else if(connectButton->text() == tr("Chat Out")) {
             sendProtocol(Chat_Out, name->text().toStdString().data());
             connectButton->setText(tr("Chat in"));
             inputLine->setDisabled(true);
@@ -250,7 +252,7 @@ void ChattingForm_Client::sendFile() // Open the file and get the file name (inc
     totalSize = 0;
     outBlock.clear();
 
-    QString filename = QFileDialog::getOpenFileName(this);
+    QString filename = QFileDialog::getOpenFileName(this);  //보낼 파일을 불러옴
     if(filename.length()) {
         file = new QFile(filename);
         file->open(QFile::ReadOnly);
@@ -270,11 +272,13 @@ void ChattingForm_Client::sendFile() // Open the file and get the file name (inc
         loadSize = 1024; // The size of data sent each time
 
         QDataStream out(&outBlock, QIODevice::WriteOnly);
+        //totalSize가 qint64타입으로 멤버 변수에 선언되었기에 자료형 타입을 맞춰서 비워놓음
         out << qint64(0) << qint64(0) << filename << name->text();
 
         totalSize += outBlock.size(); // The total size is the file size plus the size of the file name and other information
         byteToWrite += outBlock.size();
 
+        //qint64(0)이 들어간 인덱스까지 파일 포인터를 땡긴다.
         out.device()->seek(0); // Go back to the beginning of the byte stream to write a qint64 in front, which is the total size and file name and other information size
         out << totalSize << qint64(outBlock.size());
 

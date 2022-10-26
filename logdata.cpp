@@ -1,5 +1,4 @@
 #include "logdata.h"
-
 #include <QTreeWidgetItem>
 #include <QFile>
 #include <QDateTime>
