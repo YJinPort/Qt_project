@@ -26,11 +26,9 @@ ServerSide::ServerSide(QWidget *parent) :
     ui->splitter->setSizes(sizes);
 
     chatServer = new QTcpServer(this);
-    connect(chatServer, SIGNAL(newConnection( )), SLOT(clientConnect( )));
+    connect(chatServer, SIGNAL(newConnection()), SLOT(clientConnect()));
     if (!chatServer->listen(QHostAddress::Any, PORT_NUMBER)) {
-        QMessageBox::critical(this, tr("Chatting Server"), \
-                              tr("Unable to start the server: %1.") \
-                              .arg(chatServer->errorString( )));
+        QMessageBox::critical(this, tr("Chatting Server"), tr("Unable to start the server: %1.").arg(chatServer->errorString( )));
 //        close( );
         return;
     }
@@ -40,9 +38,7 @@ ServerSide::ServerSide(QWidget *parent) :
     fileServer = new QTcpServer(this);
     connect(fileServer, SIGNAL(newConnection()), SLOT(acceptConnection()));
     if (!fileServer->listen(QHostAddress::Any, PORT_NUMBER+1)) {
-        QMessageBox::critical(this, tr("Chatting Server"), \
-                              tr("Unable to start the server: %1.") \
-                              .arg(fileServer->errorString( )));
+        QMessageBox::critical(this, tr("Chatting Server"), tr("Unable to start the server: %1.").arg(fileServer->errorString( )));
 //        close( );
         return;
     }
@@ -70,9 +66,9 @@ ServerSide::ServerSide(QWidget *parent) :
 
     connect(ui->savePushButton, SIGNAL(clicked()), logData, SLOT(saveData()));
 
-    qDebug() << tr("The server is running on port %1.").arg(chatServer->serverPort( ));
+    qDebug() << tr("The server is running on port %1.").arg(chatServer->serverPort());
 
-    setWindowTitle(tr("Chat Server"));
+    setWindowTitle(tr("Server_Admin"));
 }
 
 ServerSide::~ServerSide()
@@ -80,8 +76,8 @@ ServerSide::~ServerSide()
     delete ui;
 
     logData->terminate();
-    chatServer->close( );
-    fileServer->close( );
+    chatServer->close();
+    fileServer->close();
 }
 
 void ServerSide::clientConnect( )
@@ -89,17 +85,17 @@ void ServerSide::clientConnect( )
     QTcpSocket *clientConnection = chatServer->nextPendingConnection( );
 
 
-    connect(clientConnection, SIGNAL(readyRead( )), SLOT(receiveData( )));
+    connect(clientConnection, SIGNAL(readyRead()), SLOT(receiveData()));
 
     //연결이 끊어진 경우 실행
-    connect(clientConnection, SIGNAL(disconnected( )), SLOT(removeClient()));
+    connect(clientConnection, SIGNAL(disconnected()), SLOT(removeClient()));
     qDebug("new connection is established...");
 }
 
 void ServerSide::receiveData( )
 {
     /*어떤 클라이언트가 데이터를 보낸 것인지 구분하는 역할*/
-    QTcpSocket *clientConnection = dynamic_cast<QTcpSocket *>(sender( ));   //sender: 연결 되어있는 소켓, 시그널을 보낼 객체(clientconnect에서)
+    QTcpSocket *clientConnection = dynamic_cast<QTcpSocket *>(sender());   //sender: 연결 되어있는 소켓, 시그널을 보낼 객체(clientconnect에서)
     QByteArray bytearray = clientConnection->read(BLOCK_SIZE);
 
     Chat_Status type;       // 채팅의 목적
@@ -211,11 +207,14 @@ void ServerSide::removeClient()
 void ServerSide::addClient(QString id, QString name)
 {
     QTreeWidgetItem* item = new QTreeWidgetItem(ui->clientTreeWidget);
+    //QTreeWidgetItem* item = new QTreeWidgetItem(ui->clientQuitTreeWidget);
     item->setText(0, "X");
     item->setText(1, name);
     ui->clientTreeWidget->addTopLevelItem(item);
+    //ui->clientQuitTreeWidget->addTopLevelItem(item);
     clientIDHash[name] = id;
     ui->clientTreeWidget->resizeColumnToContents(0);
+    //ui->clientQuitTreeWidget->resizeColumnToContents(0);
 }
 
 void ServerSide::on_clientTreeWidget_customContextMenuRequested(const QPoint &pos)
@@ -340,3 +339,45 @@ void ServerSide::readClient()
         delete file;
     }
 }
+
+//exit 버튼을 클릭했을 경우 실행
+void ServerSide::on_exitPushButton_clicked()
+{
+    logData->terminate();
+    chatServer->close();
+    fileServer->close();
+
+    close();
+}
+
+//windowTitle단의 X를 클릭하여 종료할 경우 실행
+void ServerSide::closeEvent(QCloseEvent*) {
+    logData->terminate();
+    chatServer->close();
+    fileServer->close();
+
+    close();
+}
+
+void ServerSide::on_sendPushButton_clicked()
+{
+    foreach(QTcpSocket *sock, clientSocketHash.values()) {
+        qDebug() << sock->peerPort();
+        /*보낸 사용자를 제외한 모든 사용자에게 채팅한 내용을 보낸다.*/
+        //if(clientNameHash.contains(sock->peerPort()) && port != sock->peerPort()) {
+            QByteArray sendArray;
+            sendArray.clear();
+            QDataStream out(&sendArray, QIODevice::WriteOnly);
+            out << Chat_Talk;
+            sendArray.append("<font color=lightsteelblue>");
+            //sendArray.append(clientNameHash[port].toStdString().data());
+            sendArray.append("Administrator");
+            sendArray.append("</font> : ");
+            //sendArray.append(name.toStdString().data());
+            sendArray.append(ui->sendLineEdit->text().toStdString().data());
+            sock->write(sendArray);
+            qDebug() << sock->peerPort();
+        //}
+    }
+}
+

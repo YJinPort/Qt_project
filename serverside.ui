@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QHBoxLayout" name="horizontalLayout_2">
+  <layout class="QHBoxLayout" name="horizontalLayout_3">
    <item>
     <widget class="QSplitter" name="splitter">
      <property name="orientation">
@@ -52,12 +52,35 @@
         </widget>
        </item>
        <item>
+        <widget class="QTreeWidget" name="clientQuitTreeWidget">
+         <property name="selectionBehavior">
+          <enum>QAbstractItemView::SelectItems</enum>
+         </property>
+         <property name="rootIsDecorated">
+          <bool>false</bool>
+         </property>
+         <property name="headerHidden">
+          <bool>true</bool>
+         </property>
+         <column>
+          <property name="text">
+           <string>Status</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Name</string>
+          </property>
+         </column>
+        </widget>
+       </item>
+       <item>
         <layout class="QHBoxLayout" name="horizontalLayout"/>
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="layoutWidget_2">
-      <layout class="QVBoxLayout" name="messageVerticalLayout">
+     <widget class="QWidget" name="">
+      <layout class="QVBoxLayout" name="verticalLayout">
        <item>
         <widget class="QTreeWidget" name="messageTreeWidget">
          <property name="rootIsDecorated">
@@ -99,6 +122,23 @@
         </widget>
        </item>
        <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <item>
+          <widget class="QComboBox" name="clientListComboBox"/>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="sendLineEdit"/>
+         </item>
+         <item>
+          <widget class="QPushButton" name="sendPushButton">
+           <property name="text">
+            <string>전송</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
         <layout class="QHBoxLayout" name="messageLayout">
          <item>
           <widget class="QPushButton" name="clearPushButton">
@@ -114,6 +154,13 @@
            </property>
           </widget>
          </item>
+         <item>
+          <widget class="QPushButton" name="exitPushButton">
+           <property name="text">
+            <string>Exit</string>
+           </property>
+          </widget>
+         </item>
         </layout>
        </item>
       </layout>
@@ -123,5 +170,22 @@
   </layout>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>sendLineEdit</sender>
+   <signal>returnPressed()</signal>
+   <receiver>sendPushButton</receiver>
+   <slot>click()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>490</x>
+     <y>268</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>603</x>
+     <y>268</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

@@ -3,7 +3,7 @@
 #include "shopping.h"
 #include "product.h"
 #include "chattingform_client.h"
-#include "serverside.h"
+
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QFile>
@@ -147,7 +147,7 @@ void ShoppingManager::loadShoppingWidget(QString name) {
     /*사용자가 주문한 주문내역을 확인하기 위한 반복문*/
     Q_FOREACH(auto v, shoppingList)
     {
-        Shopping *s = static_cast<Shopping*>(v);
+        Shopping *s = static_cast<Shopping*>(v);    //auto변수 v의 자료형을 Shopping*형으로 변환 후 고정
 
         //현재 표시되어있는 주문 리스트를 삭제한다.
         ui->orderListTreeWidget->takeTopLevelItem(ui->orderListTreeWidget->indexOfTopLevelItem(s));
@@ -171,38 +171,53 @@ void ShoppingManager::on_takeOrderPushButton_clicked()
     int orderCount, proPrice, proCount, checkCount;
     QString proName, proType, address;
     QString clientName;
-    QList<QString> labelText;
+    QList<QString> labelText;   //로그인한 아이디의 회원 이름을 구하기 위해 사용한 List변수
     bool ok;
+
+    /*inputDialog에서 숫자 이외의 문자에 대해 예외처리를 위해 사용*/
     QLineEdit *onlyNum = new QLineEdit(this);
     QIntValidator *intValidator = new QIntValidator(this);
-    onlyNum->setValidator(intValidator);
 
-    labelText = ui->orderListLabel->text().split("님");
-    clientName = labelText[0];
+    onlyNum->setValidator(intValidator);                //입력할 LineEdit을 숫자 값인지 검사하도록 지정
+    labelText = ui->orderListLabel->text().split("님");  //OOO님의 주문내역 Label에서 이름을 구해오기 위해 실행
+    clientName = labelText[0];                           //split으로 자른 문장에서 사용자의 이름 부분을 clientName 변수에 저장
 
+    /*로그인을 성공하여 Label의 길이가 길어지고 주문할 제품을 제품 위젯에서 선택했을 경우 실행*/
     if(ui->orderListLabel->text().length() > 5 && ui->productInfoTreeWidget->currentItem() != nullptr) {
-        orderCount = shoppingCount();
+        orderCount = shoppingCount();   //주문 번호의 경우 숫자를 자동으로 리턴해주는 함수를 사용하여 설정
+
+        /*제품 이름, 제품 가격은 제품 위젯에서 인텍스로 가져온다.*/
         proName = ui->productInfoTreeWidget->currentItem()->text(1);
         proPrice = ui->productInfoTreeWidget->currentItem()->text(2).toInt();
+        proType = ui->productInfoTreeWidget->currentItem()->text(4);
+
+        /*숫자 이외의 문자가 inputDialog에 입력되었을 경우 0을 리턴한다.*/
         proCount = QInputDialog::getText(this, "Order", "주문 수량을 입력하세요.", onlyNum->Normal, NULL, &ok).toInt();
-        if(ok == false) return;
-        else if(proCount <= 0) {
+
+        if(ok == false) return;     //취소 버튼을 클릭했을 경우 실행
+        else if(proCount <= 0) {    //숫자 이외의 문자가 inputDialog에 입력되었을 경우 실행
             QMessageBox::warning(this, tr("주문 실패"), tr("주문 수량을 확인해주세요."));
             return;
         }
-        proType = ui->productInfoTreeWidget->currentItem()->text(4);
-        address = emit takeOrderSign(clientName);
 
+        //회원 주소의 경우 clientList에서 구해온다.
+        address = emit takeOrderSign(clientName);   //회원 주소를 구하기 위해 호출하는 SIGNAL
+
+        //주문 시 제품의 재고량을 확인하기 위한 SIGNAL(리턴 값을 받아옴)
         checkCount = emit updateAfter_upCount(ui->productInfoTreeWidget->currentItem()->text(1), proCount);
         if(checkCount < 0) {
             QMessageBox::information(this, tr("주문 실패"), tr("재고가 부족합니다."));
             return;
         }
 
+        //주문한 값이 저장된 객체를 생성한다.
         Shopping *s = new Shopping(orderCount, proName, proPrice, proCount, proType, address, clientName);
-        shoppingList.insert(orderCount, s);
+        shoppingList.insert(orderCount, s);             //주문한 내역을 주문 리스트에 저장한다.
+        ui->orderListTreeWidget->addTopLevelItem(s);    //주문한 내역을 주문 위젯에 추가한다.
+
         QMessageBox::information(this, tr("주문 성공"), tr("주문이 완료되었습니다."));
-        ui->orderListTreeWidget->addTopLevelItem(s);
+
+        /*주문 이후의 수정된 제품 값에 대한 출력을 위해 실행한다.*/
         dataClear();
         dataLoad();
     }
@@ -215,42 +230,58 @@ void ShoppingManager::on_updateOrderPushButton_clicked()
     bool choice, change;
     int updateCount, checkCount;
     QString choiceUpdate, updateAddress;
+
+    /*inputDialog에서 숫자 이외의 문자에 대해 예외처리를 위해 사용*/
     QLineEdit *onlyNum = new QLineEdit(this);
     QIntValidator *intValidator = new QIntValidator(this);
-    onlyNum->setValidator(intValidator);
 
+    onlyNum->setValidator(intValidator);    //입력할 LineEdit을 숫자 값인지 검사하도록 지정
+
+    /*주문 내역 위젯의 주문한 내역을 선택했을 경우에 실행한다.*/
     if(ui->orderListTreeWidget->currentItem() != nullptr) {
+        //주문 내역에서 주문수량 or 배송주소 중 어느것을 변경할 것인지에 대해 확인한다.
         choiceUpdate = QInputDialog::getText(this, "변경 정보 선택", "주문수량 / 배송주소", QLineEdit::Normal, NULL, &choice);
+
+        //주문수량을 입력하였을 경우
         if(choiceUpdate.trimmed() == "주문수량") {
+
+            /*주문수량에 대한 예외처리를 위한 do-while문*/
             do {
                 updateCount = QInputDialog::getText(this, "Update", "변경하실 수량을 입력해주세요.", onlyNum->Normal, NULL, &change).toInt();
-                if(change == false) {
-                    updateCount = ui->orderListTreeWidget->currentItem()->text(3).toInt();
-                    break;
-                }
+                if(change == false) return;
             } while(change != true || updateCount <= 0);
 
+            /*주문 변경 후 처리를 위한 반복문*/
             Q_FOREACH(auto v, shoppingList) {
-                Shopping *s = static_cast<Shopping*>(v);
+                Shopping *s = static_cast<Shopping*>(v);    //auto변수 v의 자료형을 Shopping*형으로 변환 후 고정
+
+                /*변경한 주문에 대한 번호가 주문 내역 리스트의 번호와 일치할 경우*/
                 if(ui->orderListTreeWidget->currentItem()->text(0).toInt() == s->shoppingCount()) {
+
+                    /*기존의 주문수량이 변경할 수량보다 작을 경우*/
                     if(s->getProductCount() < updateCount) {
-                        int upCount = updateCount - s->getProductCount();
+                        int upCount = updateCount - s->getProductCount();   //변경이 있을 수량을 계산하여 upCount변수에 담는다.
+                        //주문 변경 시 제품의 재고량을 확인하기 위한 SIGNAL(리턴 값을 받아옴)
                         checkCount = emit updateAfter_upCount(ui->orderListTreeWidget->currentItem()->text(1), upCount);
                         if(checkCount < 0) {
                             QMessageBox::information(this, tr("변경 실패"), tr("재고가 부족합니다."));
                             break;
                         }
                     }
+                    /*기존의 주문수량이 변경할 수량보다 많을 경우*/
                     else {
-                        int downCount = s->getProductCount() - updateCount;
+                        int downCount = s->getProductCount() - updateCount; //변경이 있을 수량을 계산하여 downCount변수에 담는다.
+                        //주문 변경 후 제품의 재고량 관리를 위한 SIGNAL
                         emit updateAfter_downCount(ui->orderListTreeWidget->currentItem()->text(1), downCount);
                     }
-                    s->setProductCount(updateCount);
-                    ui->orderListTreeWidget->currentItem()->setText(3, QString::number(updateCount));
-                    shoppingList.insert(ui->orderListTreeWidget->currentItem()->text(0).toInt(), s);
+
+                    s->setProductCount(updateCount);    //주문 내역의 주문 수량을 수정한다.
+                    ui->orderListTreeWidget->currentItem()->setText(3, QString::number(updateCount));   //주문 위젯에서의 내용도 변경한다.
+                    shoppingList.insert(ui->orderListTreeWidget->currentItem()->text(0).toInt(), s);    //변경된 내용을 주문 리스트에 저장한다.
 
                     QMessageBox::information(this, tr("변경 성공"), tr("주문 수량이 수정되었습니다."));
 
+                    /*주문 변경 이후의 수정된 제품 값에 대한 출력을 위해 실행한다.*/
                     dataClear();
                     dataLoad();
 
@@ -259,22 +290,27 @@ void ShoppingManager::on_updateOrderPushButton_clicked()
             }
 
         }
+        //배송주소를 입력하였을 경우
         else if(choiceUpdate.trimmed() == "배송주소") {
+
+            /*배송주소가 적히지 않는 위험 방지를 위한 do-while문*/
             do {
                 updateAddress = QInputDialog::getText(this, "Update", "변경하실 주소를 입력해주세요.", QLineEdit::Normal, NULL, &change);
-                if(change == false) {
-                    updateAddress = ui->orderListTreeWidget->currentItem()->text(5);
-                    break;
-                }
+                if(change == false) return;
             } while(change != true || updateAddress.trimmed() == "");
 
+            /*주문 변경 후 처리를 위한 반복문*/
             Q_FOREACH(auto v, shoppingList) {
-                Shopping *s = static_cast<Shopping*>(v);
+                Shopping *s = static_cast<Shopping*>(v);    //auto변수 v의 자료형을 Shopping*형으로 변환 후 고정
+
+                /*변경할 주문에 대한 번호가 주문 내역 리스트의 번호와 일치할 경우*/
                 if(ui->orderListTreeWidget->currentItem()->text(0).toInt() == s->shoppingCount()) {
-                    s->setClientAddress(updateAddress);
-                    ui->orderListTreeWidget->currentItem()->setText(5, updateAddress);
-                    shoppingList.insert(ui->orderListTreeWidget->currentItem()->text(0).toInt(), s);
+                    s->setClientAddress(updateAddress);     //주문 내역의 배송 주소를 수정한다.
+                    ui->orderListTreeWidget->currentItem()->setText(5, updateAddress);                  //주문 위젯에서의 내용도 변경한다.
+                    shoppingList.insert(ui->orderListTreeWidget->currentItem()->text(0).toInt(), s);    //변경된 내용을 주문 리스트에 저장한다.
+
                     QMessageBox::information(this, tr("변경 성공"), tr("배송 주소가 수정되었습니다."));
+
                     break;
                 }
             }
@@ -282,25 +318,36 @@ void ShoppingManager::on_updateOrderPushButton_clicked()
     }
 }
 
-//주문취소 버튼 클릭 시 동작
+//주문 취소 버튼 클릭 시 동작
 void ShoppingManager::on_cancelOrderPushButton_clicked()
 {
     int eraseNum;
+
+    /*주문 내역 위젯의 주문한 내역을 선택했을 경우에 실행한다.*/
     if(ui->orderListTreeWidget->currentItem() != nullptr) {
+        //주문 취소의 key가 되는 주문 번호는 주문 위젯에서 인덱스로 가져온다.
         eraseNum = ui->orderListTreeWidget->currentItem()->text(0).toInt();
+
+        /*주문 취소 후 처리를 위한 반복문*/
         Q_FOREACH(auto v, shoppingList) {
-            Shopping *s = static_cast<Shopping*>(v);
-            if(eraseNum == s->shoppingCount()) {
+            Shopping *s = static_cast<Shopping*>(v);    //auto변수 v의 자료형을 Shopping*형으로 변환 후 고정
+            if(eraseNum == s->shoppingCount()) {        //취소할 주문에 대한 번호가 주문 내역 리스트의 번호와 일치할 경우
+                //주문 취소 후 제품의 재고량 관리를 위한 SIGNAL
                 emit updateAfter_downCount(ui->orderListTreeWidget->currentItem()->text(1), ui->orderListTreeWidget->currentItem()->text(3).toInt());
-                shoppingList.remove(eraseNum);
+                shoppingList.remove(eraseNum);          //주문 리스트에서 취소할 주문에 대한 정보를 삭제한다.
+                //주문 위젯에서도 주문 취소한 제품을 삭제한다.
                 ui->orderListTreeWidget->takeTopLevelItem(ui->orderListTreeWidget->indexOfTopLevelItem(s));
+
                 QMessageBox::information(this, tr("취소 성공"), tr("주문이 취소되었습니다."));
+
+                /*주문 취소 이후의 수정된 제품 값에 대한 출력을 위해 실행한다.*/
                 dataClear();
                 dataLoad();
                 break;
             }
         }
     }
+    /*주문 내역 위젯의 주문한 내역을 선택하지 않았을 경우에 실행한다.*/
     else QMessageBox::warning(this, tr("취소 실패"), tr("취소하실 주문을 선택해주세요."));
 }
 
@@ -310,14 +357,15 @@ void ShoppingManager::on_managementPushButton_clicked()
     bool ok;
     QString passwd;
 
+    /*관리자 번호 입력에 대한 예외처리를 위한 do-while 반복문*/
     do {
         passwd = QInputDialog::getText(this, "Manager", "관리자 번호를 입력하세요.", QLineEdit::Normal, NULL, &ok);
         if(ok == false) break;
     } while(/*ok != true || */passwd.trimmed() != "ossmall");
 
     if(ok == true) {
-        emit viewClientList();
-        emit onlyStaff();
+        emit viewClientList();  //관리자 페이지로 이동 시 회원 정보 리스트를 출력하기 위해 호출하는 SIGNAL
+        emit onlyStaff();       //관리자 페이지로 이동하기 위해 호출하는 SIGNAL
     }
 }
 
@@ -325,7 +373,6 @@ void ShoppingManager::on_managementPushButton_clicked()
 void ShoppingManager::on_chatClientPushButton_clicked()
 {
     ChattingForm_Client *clientForm = new ChattingForm_Client();
-    //clientForm = new ChattingForm_Client();
     clientForm->show();
 }
 
@@ -341,7 +388,7 @@ void ShoppingManager::on_chatServerPushButton_clicked()
     } while(/*ok != true || */passwd.trimmed() != "ossmall");
 
     if(ok == true) {
-        ServerSide *serverForm = new ServerSide();
+        serverForm = new ServerSide();
         connect(this, SIGNAL(sendClientToServer(QString, QString)), serverForm, SLOT(addClient(QString, QString)));
         emit serverBtnClicked();
 
@@ -358,5 +405,5 @@ void ShoppingManager::clientSignalReceived(QString id, QString name) {
 //쇼핑 끝내기 버튼 클릭 시 동작
 void ShoppingManager::on_exitShoppingPushButton_clicked()
 {
-    emit exitShopping();
+    emit exitShopping();    //메인 윈도우를 종료하기 위한 SIGNAL
 }

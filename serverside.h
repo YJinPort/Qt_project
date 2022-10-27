@@ -52,6 +52,8 @@ private:
     QByteArray inBlock;
     LogData* logData;
 
+    void closeEvent(QCloseEvent*) override;
+
 private slots:
     void acceptConnection();                /* 파일 서버 */
     void readClient();
@@ -65,6 +67,8 @@ private slots:
     void on_clientTreeWidget_customContextMenuRequested(const QPoint &pos);
 
     //void receivedClientInfo(int, QString);
+    void on_exitPushButton_clicked();
+    void on_sendPushButton_clicked();
 };
 
 #endif // SERVERSIDE_H

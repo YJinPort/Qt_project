@@ -76,15 +76,9 @@ int ClientManager::userCount() {
 void ClientManager::on_clientRegisterPushButton_clicked()
 {
     /*아이디, 이름, 주소를 입력 혹은 정보 수집을 동의하지 않았을 경우 경고메시지 발생*/
-    if(ui->userIdLineEdit->text().trimmed() == "") {
-        QMessageBox::warning(this, tr("가입 실패"), tr("아이디를 입력하여 주세요."));
-    }
-    else if(ui->userNameLineEdit->text().trimmed() == "") {
-        QMessageBox::warning(this, tr("가입 실패"), tr("성함을 입력하여 주세요."));
-    }
-    else if(ui->userAddressLineEdit->text().trimmed() == "") {
-        QMessageBox::warning(this, tr("가입 실패"), tr("주소를 입력하여 주세요."));
-    }
+    if(ui->userIdLineEdit->text().trimmed() == "") QMessageBox::warning(this, tr("가입 실패"), tr("아이디를 입력하여 주세요."));
+    else if(ui->userNameLineEdit->text().trimmed() == "") QMessageBox::warning(this, tr("가입 실패"), tr("성함을 입력하여 주세요."));
+    else if(ui->userAddressLineEdit->text().trimmed() == "") QMessageBox::warning(this, tr("가입 실패"), tr("주소를 입력하여 주세요."));
     else if(ui->agreeClientInfoCheckBox->isChecked() == false || ui->agreeAddressCheckBox->isChecked() == false) {
         QMessageBox::warning(this, tr("가입 실패"), tr("정보 수집을 동의하여 주세요"));
     }
@@ -100,6 +94,7 @@ void ClientManager::on_clientRegisterPushButton_clicked()
         address = ui->userAddressLineEdit->text();
         gender = ui->userGenderComboBox->currentText();
 
+        //해당 정보를 c라는 객체에 담는다.
         Client *c = new Client(ucnt, userId, name, call, address, gender);
         clientList.insert(ucnt, c);     //사용자 리스트에 회원 정보를 입력(저장)한다.
 
@@ -137,7 +132,7 @@ void ClientManager::updateClientInfo(QStringList updateList) {
 
     /*변경하려는 회원 정보가 리스트에 등록되어 있는 확인하기 위한 반복문*/
     Q_FOREACH(auto v, clientList) {
-        Client *c = static_cast<Client*>(v);
+        Client *c = static_cast<Client*>(v);    //auto변수 v의 자료형을 Client*형으로 변환 후 고정
         if(updateList[0] == c->getUserID()) {   //회원 아이디가 이미 등록 되어있을 경우
             userCount = c->userCount();     //리스트의 키값을 위한 변수에 값을 입력
             /*현재 키값의 회원 정보를 변경될 값으로 지정한다*/
@@ -162,7 +157,8 @@ void ClientManager::updateClientInfo(QStringList updateList) {
 
         /*비운 위젯 리스트에 변경된 회원 정보를 등록하기 위한 반복문*/
         Q_FOREACH(auto v, clientList) {
-            Client *c = static_cast<Client*>(v);
+            Client *c = static_cast<Client*>(v);    //auto변수 v의 자료형을 Client*형으로 변환 후 고정
+
             /*변경된 정보를 변수에 담는다.*/
             userCount = c->userCount();
             updateList[0] = c->getUserID();
@@ -184,7 +180,7 @@ void ClientManager::deleteClientInfo(QString userId) {
 
     /*인자로 받아온 회원 아이디가 회원 리스트에 등록된 정보인지 확인한다.*/
     Q_FOREACH(auto v, clientList) {
-        Client *c = static_cast<Client*>(v);
+        Client *c = static_cast<Client*>(v);    //auto변수 v의 자료형을 Client*형으로 변환 후 고정
         if(userId == c->getUserID()) {          //사용자 아이디가 등록되어 있던 아이디와 일치할 경우
             clientList.remove(c->userCount());  //회원 정보 리스트에서 해당 아이디가 속한 정보를 삭제한다.
             QMessageBox::information(this, tr("삭제 성공"), tr("회원 삭제가 완료되었습니다.")); //삭제가 왼료되었으므로 삭제 완료 메시지를 표출한다.
@@ -199,7 +195,7 @@ void ClientManager::deleteClientInfo(QString userId) {
 
         /*비운 위젯 리스트에 삭제된 회원 정보를 삭제하고 새로 호출하기 위한 반복문*/
         Q_FOREACH(auto v, clientList) {
-            Client *c = static_cast<Client*>(v);
+            Client *c = static_cast<Client*>(v);    //auto변수 v의 자료형을 Client*형으로 변환 후 고정
 
             //변경된 정보를 item이라는 객체에 담는다.
             Client *item = new Client(c->userCount(), c->getUserID(), c->getName(), c->getPhoneNumber(), c->getAddress(), c->get_Gender());
@@ -215,7 +211,7 @@ void ClientManager::containClientInfo() {
 
     /*관리자 페이지의 회원 위젯에 표시될 회원 정보들을 보내기 위한 반목문*/
     Q_FOREACH(auto v, clientList) {
-        Client *c = static_cast<Client*>(v);
+        Client *c = static_cast<Client*>(v);    //auto변수 v의 자료형을 Client*형으로 변환 후 고정
 
         /*등록 되어있는 회원 정보를 각각의 변수에 담는다.*/
         ucnt = c->userCount();
@@ -254,9 +250,9 @@ QString ClientManager::findAddressForOrder(QString orderName) {
 
     /*인자로 받아온 회원 이름이 회원 리스트에 등록된 정보인지 확인한다.*/
     Q_FOREACH(auto v, clientList) {
-        Client *c = static_cast<Client*>(v);
-        if(orderName == c->getName()) {     //인자로 받아온 회원 이름이 회원 리스트에 등록된 이름인 경우
-            orderAddress = c->getAddress(); //등록된 회원 이름에 대한 주소를 orderAddress란 변수에 담는다.
+        Client *c = static_cast<Client*>(v);    //auto변수 v의 자료형을 Client*형으로 변환 후 고정
+        if(orderName == c->getName()) {         //인자로 받아온 회원 이름이 회원 리스트에 등록된 이름인 경우
+            orderAddress = c->getAddress();     //등록된 회원 이름에 대한 주소를 orderAddress란 변수에 담는다.
             break;
         }
     }
@@ -270,7 +266,7 @@ int ClientManager::deleteId_List(QString id) {
 
     /*인자로 받아온 회원 아이디가 회원 리스트에 등록된 정보인지 확인한다.*/
     Q_FOREACH(auto v, clientList) {
-        Client *c = static_cast<Client*>(v);
+        Client *c = static_cast<Client*>(v);    //auto변수 v의 자료형을 Client*형으로 변환 후 고정
         if(id == c->getUserID()) {              //인자로 받아온 회원 아이디가 회원 리스트에 등록된 아이디인 경우
             clientList.remove(c->userCount());  //해당 아이디에 등록된 정보를 회원 리스트에서 삭제한다.
             cnt++;      //삭제가 왼료되었는지 확인하기 위한 cnt변수읙 값을 1 증가시킨다.

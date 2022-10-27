@@ -145,8 +145,10 @@ void ChattingForm_Client::closeEvent(QCloseEvent*)
 {
     sendProtocol(Chat_LogOut, name->text().toStdString().data());
     clientSocket->disconnectFromHost();
+
+    /*disconnectFromHost()를 했는데도 불구하고 연결이 끊어지지 않았을 경우*/
     if(clientSocket->state() != QAbstractSocket::UnconnectedState)
-        clientSocket->waitForDisconnected();
+        clientSocket->waitForDisconnected();    //끊어질 때 까지 기다린다.
 }
 
 /* 데이터를 받을 때 */
