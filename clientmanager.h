@@ -33,6 +33,7 @@ private slots:
     QString findAddressForOrder(QString);   //쇼핑 화면에서 주문하기 버튼 클릭 시 주문자의 주소 정보를 찾아주기 위한 SLOT 함수
     int deleteId_List(QString);             //쇼핑 화면에서 회원 탈퇴 버튼 클릭 시 해당 아이디 검색 후 List에서 삭제하기 위한 SLOT 함수
     void serverOpenFromShopping();          //쇼핑 화면에서 서버오픈 시 사용자의 ID와 이름을 전달해주기 위한 SLOT 함수
+    void sendNameListToServer();
 
 private:
     Ui::ClientManager *ui;
@@ -55,6 +56,7 @@ signals:
 
     /*채팅 프로그램*/
     void sendToServer(QString, QString);    //서버에 보내줄 사용자의 ID와 이름을 보내주기 위해 호출되는 신호
+    void sendNameToServer(QStringList);
 };
 
 #endif // CLIENTMANAGER_H

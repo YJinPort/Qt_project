@@ -34,6 +34,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(shoppingManager, SIGNAL(updateAfter_downCount(QString, int)), productManager, SLOT(updateAfterDownCount(QString, int)));
     connect(shoppingManager, SIGNAL(deleteClient(QString)), clientManager, SLOT(deleteId_List(QString)));
     connect(shoppingManager, SIGNAL(serverBtnClicked()), clientManager, SLOT(serverOpenFromShopping()));
+    connect(shoppingManager, SIGNAL(serverInputComboBox()), clientManager, SLOT(sendNameListToServer()));
 
     connect(clientManager, SIGNAL(cancellation()), this, SLOT(cancellationClient()));
     connect(clientManager, SIGNAL(join()), this, SLOT(joinClient()));
@@ -44,6 +45,7 @@ MainWindow::MainWindow(QWidget *parent)
     //connect(clientManager, SIGNAL(sendToServer(int, QString)), server, SLOT(addClient(int, QString)));
     //client -> shopping
     connect(clientManager, SIGNAL(sendToServer(QString, QString)), shoppingManager, SLOT(clientSignalReceived(QString, QString)));
+    connect(clientManager, SIGNAL(sendNameToServer(QStringList)), shoppingManager, SLOT(inputNameServerCombobox(QStringList)));
 
     //connect(this, signal2, server, slot(addclient));
 

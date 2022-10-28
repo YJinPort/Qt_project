@@ -51,6 +51,7 @@ private slots:
     void successLoginCheck(QString);                //로그인 성공 시 동작하는 SLOT 함수
     void failedLoginCheck();                        //로그인 실패 시 동작하는 SLOT 함수
     void clientSignalReceived(QString, QString);    //사용자의 아이디와 리스트를 받아서 채팅서버로 전달하기 위한 SLOT 함수
+    void inputNameServerCombobox(QStringList);      //사용자의 이름 리스트를 받아서 채팅서버로 전달하기 위한 SLOT 함수
 
 private:
     Ui::ShoppingManager *ui;
@@ -78,8 +79,11 @@ signals:
     void viewProductList();                     //제품 정보의 리스트를 불러오기 위해 호출되는 신호
 
     /*채팅 프로그램*/
-    void serverBtnClicked();                    //서버오픈 버튼 클릭 시 사용자 정보를 요청하기 위해 호출되는 신호
-    void sendClientToServer(QString, QString);  //사용자의 아이디와 리스트를 받아서 채팅서버로 전달하기 위해 호출되는 신호
+    void serverBtnClicked();                        //서버오픈 버튼 클릭 시 사용자 정보를 요청하기 위해 호출되는 신호
+    void sendClientToServer(QString, QString);      //사용자의 아이디와 리스트를 받아서 채팅서버로 전달하기 위해 호출되는 신호
+    void serverInputComboBox();                     //서버의 콤보 박스를 채우기 위한 정보를 받아오기 위해 호출되는 신호
+    void sendNameToSeverFromClient(QStringList);    //클라이언트로부터 받아온 이름 리스트를 서버로 보내기 위해 호출되는 신호
+    void sendNameToClient(QString);                 //채팅 클라이언트로 사용자 이름을 보내주기 위해 호출하는 SIGNAL
 
     /*프로그램 종료*/
     void exitShopping();                        //쇼핑 끝내기 버튼 클릭 시 프로그램 종료를 위해 호출되는 신호

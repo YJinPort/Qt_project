@@ -23,8 +23,8 @@ ChattingForm_Client::ChattingForm_Client(QWidget *parent)
 {
     // 연결한 서버 정보 입력을 위한 위젯들
     name = new QLineEdit(this);
-    QSettings settings("ChatClient", "Chat Client");
-    name->setText(settings.value("ChatClient/ID").toString());
+    //QSettings settings("ChatClient", "Chat Client");
+    //name->setText(settings.value("ChatClient/ID").toString());
 
     serverAddress = new QLineEdit(this);
     serverAddress->setText("127.0.0.1");
@@ -112,10 +112,10 @@ ChattingForm_Client::ChattingForm_Client(QWidget *parent)
                                         serverPort->text( ).toInt( ));
             clientSocket->waitForConnected();
             sendProtocol(Chat_Login, name->text().toStdString().data());
-            connectButton->setText(tr("Chat in"));
+            connectButton->setText(tr("Chat In"));
             name->setReadOnly(true);
         }
-        else if(connectButton->text() == tr("Chat in")) {
+        else if(connectButton->text() == tr("Chat In")) {
             sendProtocol(Chat_In, name->text().toStdString().data());
             connectButton->setText(tr("Chat Out"));
             inputLine->setEnabled(true);
@@ -124,7 +124,7 @@ ChattingForm_Client::ChattingForm_Client(QWidget *parent)
         }
         else if(connectButton->text() == tr("Chat Out")) {
             sendProtocol(Chat_Out, name->text().toStdString().data());
-            connectButton->setText(tr("Chat in"));
+            connectButton->setText(tr("Chat In"));
             inputLine->setDisabled(true);
             sentButton->setDisabled(true);
             fileButton->setDisabled(true);
@@ -138,6 +138,11 @@ ChattingForm_Client::~ChattingForm_Client() {
     clientSocket->close( );
     QSettings settings("ChatClient", "Chat Client");
     settings.setValue("ChatClient/ID", name->text());
+}
+
+void ChattingForm_Client::receivedLoginName(QString userName) {
+    name->setText(userName);
+    name->setDisabled(true);
 }
 
 /* 창이 닫힐 때 서버에 연결 접속 메시지를 보내고 종료 */
@@ -173,22 +178,27 @@ void ChattingForm_Client::receiveData( )
         inputLine->setEnabled(true);        // 버튼의 상태 변경
         sentButton->setEnabled(true);
         fileButton->setEnabled(true);
+        connectButton->setText("Chat Out");
         break;
     case Chat_KickOut:      // 강퇴면
-        QMessageBox::critical(this, tr("Chatting Client"), \
+        QMessageBox::information(this, tr("Chatting Client"), \
                               tr("Kick out from Server"));
         inputLine->setDisabled(true);       // 버튼의 상태 변경
         sentButton->setDisabled(true);
         fileButton->setDisabled(true);
         name->setReadOnly(false);           // 메시지 입력 불가
+        connectButton->setText("Chat In");
+        connectButton->setDisabled(true);
         break;
     case Chat_Invite:       // 초대면
-        QMessageBox::critical(this, tr("Chatting Client"), \
+        QMessageBox::information(this, tr("Chatting Client"), \
                               tr("Invited from Server"));
         inputLine->setEnabled(true);
         sentButton->setEnabled(true);
         fileButton->setEnabled(true);
         name->setReadOnly(true);            // 메시지 입력 가능
+        connectButton->setText("Chat Out");
+        connectButton->setDisabled(false);
         break;
     };
 }

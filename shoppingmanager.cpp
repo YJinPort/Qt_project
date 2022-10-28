@@ -372,8 +372,24 @@ void ShoppingManager::on_managementPushButton_clicked()
 //채팅하기 버튼 클릭 시 동작
 void ShoppingManager::on_chatClientPushButton_clicked()
 {
-    ChattingForm_Client *clientForm = new ChattingForm_Client();
-    clientForm->show();
+    QList<QString> labelText;   //로그인한 아이디의 회원 이름을 구하기 위해 사용한 List변수
+    QString name;               //클라이언트 채팅창으로 이름을 보내주기 위한 변수
+
+
+    //로그인을 성공하여 Label의 길이가 길어진 경우
+    if(ui->orderListLabel->text().length() > 5) {
+        ChattingForm_Client *clientForm = new ChattingForm_Client();
+
+        connect(this, SIGNAL(sendNameToClient(QString)), clientForm, SLOT(receivedLoginName(QString)));
+        labelText = ui->orderListLabel->text().split("님");  //OOO님의 주문내역 Label에서 이름을 구해오기 위해 실행
+        name = labelText[0];            //split으로 자른 문장에서 사용자의 이름 부분을 name 변수에 저장
+        emit sendNameToClient(name);    //클라이언트 채팅창으로 이름을 보내주기 위해 호출하는 SIGNAL
+
+        clientForm->show();
+    }
+    //로그인 하지 않은 경우
+    else QMessageBox::warning(this, tr("입장 실패"), tr("로그인 후 사용 가능합니다."));
+
 }
 
 //서버오픈 버튼 클릭 시 동작
@@ -390,7 +406,9 @@ void ShoppingManager::on_chatServerPushButton_clicked()
     if(ok == true) {
         serverForm = new ServerSide();
         connect(this, SIGNAL(sendClientToServer(QString, QString)), serverForm, SLOT(addClient(QString, QString)));
+        connect(this, SIGNAL(sendNameToSeverFromClient(QStringList)), serverForm, SLOT(inputNameComboBox(QStringList)));
         emit serverBtnClicked();
+        emit serverInputComboBox();
 
         serverForm->show();
         //ui->pushButton_10->setDisabled(true);
@@ -400,6 +418,10 @@ void ShoppingManager::on_chatServerPushButton_clicked()
 //사용자의 아이디와 리스트를 받아서 채팅서버로 전달하기 위한 SLOT 함수
 void ShoppingManager::clientSignalReceived(QString id, QString name) {
     emit sendClientToServer(id, name);
+}
+
+void ShoppingManager::inputNameServerCombobox(QStringList nameList) {
+    emit sendNameToSeverFromClient(nameList);
 }
 
 //쇼핑 끝내기 버튼 클릭 시 동작

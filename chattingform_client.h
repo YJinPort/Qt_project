@@ -29,6 +29,7 @@ private slots:
     void sendProtocol(Chat_Status, char*, int = 1020);
     void sendFile();
     void goOnSend(qint64);
+    void receivedLoginName(QString);
 
 private:
     void closeEvent(QCloseEvent*) override;

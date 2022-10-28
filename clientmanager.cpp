@@ -288,3 +288,12 @@ void ClientManager::serverOpenFromShopping() {
         emit sendToServer(sendServerId, sendSeverName);
     }
 }
+
+void ClientManager::sendNameListToServer() {
+    QStringList nameList;
+    Q_FOREACH(auto v, clientList) {
+        nameList << v->getName();
+    }
+
+    emit sendNameToServer(nameList);
+}

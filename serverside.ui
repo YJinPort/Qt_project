@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>652</width>
-    <height>312</height>
+    <width>723</width>
+    <height>408</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -41,12 +41,17 @@
          </property>
          <column>
           <property name="text">
-           <string>Status</string>
+           <string>Image</string>
           </property>
          </column>
          <column>
           <property name="text">
            <string>Name</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Status</string>
           </property>
          </column>
         </widget>
@@ -64,12 +69,17 @@
          </property>
          <column>
           <property name="text">
-           <string>Status</string>
+           <string>Image</string>
           </property>
          </column>
          <column>
           <property name="text">
            <string>Name</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Status</string>
           </property>
          </column>
         </widget>
@@ -79,7 +89,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="">
+     <widget class="QWidget" name="layoutWidget">
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
         <widget class="QTreeWidget" name="messageTreeWidget">

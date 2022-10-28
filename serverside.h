@@ -39,6 +39,7 @@ private:
     const int PORT_NUMBER = 8000;
 
     Ui::ServerSide *ui;
+
     QTcpServer *chatServer;
     QTcpServer *fileServer;
     QHash<quint16, QString> clientNameHash;
@@ -52,7 +53,7 @@ private:
     QByteArray inBlock;
     LogData* logData;
 
-    void closeEvent(QCloseEvent*) override;
+    void closeEvent(QCloseEvent*) override; //윈도우Title 창의 X를 눌러 종료하였을 경우 처리하는 이벤트 핸들러
 
 private slots:
     void acceptConnection();                /* 파일 서버 */
@@ -69,6 +70,7 @@ private slots:
     //void receivedClientInfo(int, QString);
     void on_exitPushButton_clicked();
     void on_sendPushButton_clicked();
+    void inputNameComboBox(QStringList);
 };
 
 #endif // SERVERSIDE_H
