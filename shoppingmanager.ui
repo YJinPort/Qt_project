@@ -427,5 +427,22 @@
   </layout>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>userIdLoginLineEdit</sender>
+   <signal>returnPressed()</signal>
+   <receiver>shoppingLoginPushButton</receiver>
+   <slot>click()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>439</x>
+     <y>206</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>583</x>
+     <y>206</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

@@ -279,7 +279,7 @@ void ShoppingManager::on_updateOrderPushButton_clicked()
                     ui->orderListTreeWidget->currentItem()->setText(3, QString::number(updateCount));   //주문 위젯에서의 내용도 변경한다.
                     shoppingList.insert(ui->orderListTreeWidget->currentItem()->text(0).toInt(), s);    //변경된 내용을 주문 리스트에 저장한다.
 
-                    QMessageBox::information(this, tr("변경 성공"), tr("주문 수량이 수정되었습니다."));
+                    QMessageBox::information(this, tr("변경 성공"), tr("주문 수량이 변경되었습니다."));
 
                     /*주문 변경 이후의 수정된 제품 값에 대한 출력을 위해 실행한다.*/
                     dataClear();
@@ -378,12 +378,14 @@ void ShoppingManager::on_chatClientPushButton_clicked()
 
     //로그인을 성공하여 Label의 길이가 길어진 경우
     if(ui->orderListLabel->text().length() > 5) {
-        ChattingForm_Client *clientForm = new ChattingForm_Client();
+        ChattingForm_Client *clientForm = new ChattingForm_Client();    //채팅 클라이언트 객체 생성
 
+        //로그인 후 회원 이름을 채팅 클라이언트에 보내주기 위한 연결
         connect(this, SIGNAL(sendNameToClient(QString)), clientForm, SLOT(receivedLoginName(QString)));
+
         labelText = ui->orderListLabel->text().split("님");  //OOO님의 주문내역 Label에서 이름을 구해오기 위해 실행
-        name = labelText[0];            //split으로 자른 문장에서 사용자의 이름 부분을 name 변수에 저장
-        emit sendNameToClient(name);    //클라이언트 채팅창으로 이름을 보내주기 위해 호출하는 SIGNAL
+        name = labelText[0];                                 //split으로 자른 문장에서 사용자의 이름 부분을 name 변수에 저장
+        emit sendNameToClient(name);                         //클라이언트 채팅창으로 이름을 보내주기 위해 호출하는 SIGNAL
 
         clientForm->show();
     }
@@ -404,23 +406,26 @@ void ShoppingManager::on_chatServerPushButton_clicked()
     } while(/*ok != true || */passwd.trimmed() != "ossmall");
 
     if(ok == true) {
-        serverForm = new ServerSide();
+        serverForm = new ServerSide();  //서버 객체 생성
+
+        /*서버에 회원 아이디 및 이름을 보내주기 위한 연결*/
         connect(this, SIGNAL(sendClientToServer(QString, QString)), serverForm, SLOT(addClient(QString, QString)));
         connect(this, SIGNAL(sendNameToSeverFromClient(QStringList)), serverForm, SLOT(inputNameComboBox(QStringList)));
         emit serverBtnClicked();
         emit serverInputComboBox();
 
         serverForm->show();
-        //ui->pushButton_10->setDisabled(true);
     }
 }
 
-//사용자의 아이디와 리스트를 받아서 채팅서버로 전달하기 위한 SLOT 함수
+//회원의 아이디와 이름 리스트를 받아서 채팅서버로 전달하기 위한 SLOT 함수
 void ShoppingManager::clientSignalReceived(QString id, QString name) {
     emit sendClientToServer(id, name);
 }
 
+//회원의 이름을 QStringList타입으로 받아서 채팅 서버로 전달해주기 위한 SLOT 함수
 void ShoppingManager::inputNameServerCombobox(QStringList nameList) {
+    //채팅 서버의 콤보 박스에 회원 이름을 전달해주기 위해 호출하는 SIGNAL
     emit sendNameToSeverFromClient(nameList);
 }
 
