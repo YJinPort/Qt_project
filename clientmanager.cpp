@@ -23,11 +23,11 @@ ClientManager::ClientManager(QWidget *parent) :
         QString line = in.readLine();           //저장 되어있는 정보를 QString타입의 변수에 담는다.
         QList<QString> row = line.split(", ");  //리스트 변수 row에 ", " 구분자를 제외한 데이터를 담는다.
         if(row.size()) {    //리스트가 비어있지 않은 경우
-            int count = row[0].toInt();     //0번째 인덱스에 있는 정보를 int타입으로 변환하여 변수에 담는다.
+            int number = row[0].toInt();     //0번째 인덱스에 있는 정보를 int타입으로 변환하여 변수에 담는다.
 
             //해당 정보를 담은 객체를 생성한다.
-            Client* c = new Client(count, row[1], row[2], row[3], row[4], row[5]);
-            clientList.insert(count, c);    //정보를 담은 객체를 회원 리스트에 저장한다.
+            Client* c = new Client(number, row[1], row[2], row[3], row[4], row[5]);
+            clientList.insert(number, c);    //정보를 담은 객체를 회원 리스트에 저장한다.
         }
     }
 
@@ -53,7 +53,7 @@ ClientManager::~ClientManager()
         Client* c = v;
 
         /*회원 리스트에 대한 각 정보들을 , 를 구분자로 하여 파일(clientlist.txt)에 저장한다.*/
-        out << c->userCount() << ", " << c->getUserID() << ", ";
+        out << c->userNumber() << ", " << c->getUserID() << ", ";
         out << c->getName() << ", ";
         out << c->getPhoneNumber() << ", ";
         out << c->getAddress() << ", ";
@@ -63,8 +63,8 @@ ClientManager::~ClientManager()
     file.close( );  //clientlist.txt파일로 회원 리스트에 저장된 정보를 출력해 저장했으므로 파일을 종료한다.
 }
 
-//회원 수를 자동으로 생성하여 전달해주기 위한 함수
-int ClientManager::userCount() {
+//회원 번호를 자동으로 생성하여 전달해주기 위한 함수
+int ClientManager::userNumber() {
     if(clientList.size() == 0) return 1;    //회원 정보 리스트에 저장된 정보가 없으면 1을 반환한다.
     else {
         auto cnt = clientList.lastKey();    //회원 정보 리스트에 저장된 마지막 키값을 얻는다.
@@ -85,7 +85,7 @@ void ClientManager::on_clientRegisterPushButton_clicked()
     /*회원가입 시작*/
     else {
         QString userId, name, call, address, gender;
-        int ucnt = userCount();     //회원 수의 경우 자동 생성 함수의 반환값을 받아온다.
+        int uNumber = userNumber();     //회원 수의 경우 자동 생성 함수의 반환값을 받아온다.
 
         /*나머지 정보의 경우 입력된 LineEdit에 적혀있는 값을 가져온다.*/
         userId = ui->userIdLineEdit->text();
@@ -95,8 +95,8 @@ void ClientManager::on_clientRegisterPushButton_clicked()
         gender = ui->userGenderComboBox->currentText();
 
         //해당 정보를 c라는 객체에 담는다.
-        Client *c = new Client(ucnt, userId, name, call, address, gender);
-        clientList.insert(ucnt, c);     //사용자 리스트에 회원 정보를 입력(저장)한다.
+        Client *c = new Client(uNumber, userId, name, call, address, gender);
+        clientList.insert(uNumber, c);     //사용자 리스트에 회원 정보를 입력(저장)한다.
 
         /*현재 입력 되어있는 LineEdit를 비우고 체크 되어있는 CheckBox를 체크 해제시킨다*/
         ui->agreeClientInfoCheckBox->setChecked(false);
@@ -127,21 +127,21 @@ void ClientManager::on_cancelRegisterPushButton_clicked()
 
 //관리자 페이지에서 회원 정보 수정 시 회원 정보 리스트에 등록된 회원 정보를 변경하기 위한 SLOT 함수
 void ClientManager::updateClientInfo(QStringList updateList) {
-    int userCount;
+    int userNumber;
     bool checkUser = true;
 
     /*변경하려는 회원 정보가 리스트에 등록되어 있는 확인하기 위한 반복문*/
     Q_FOREACH(auto v, clientList) {
         Client *c = static_cast<Client*>(v);    //auto변수 v의 자료형을 Client*형으로 변환 후 고정
         if(updateList[0] == c->getUserID()) {   //회원 아이디가 이미 등록 되어있을 경우
-            userCount = c->userCount();     //리스트의 키값을 위한 변수에 값을 입력
+            userNumber = c->userNumber();     //리스트의 키값을 위한 변수에 값을 입력
             /*현재 키값의 회원 정보를 변경될 값으로 지정한다*/
             c->setName(updateList[1]);
             c->setPhoneNumber(updateList[2]);
             c->setAddress(updateList[3]);
             c->setGender(updateList[4]);
 
-            clientList.insert(userCount, c);    //사용자 리스트에 회원 정보를 입력(저장)한다.
+            clientList.insert(userNumber, c);    //사용자 리스트에 회원 정보를 입력(저장)한다.
             checkUser = false;  //등록된 회원이라는 것이 확인되어 변경에 성공했기에 아래의 조건문을 위해 값을 변경한다.
 
             QMessageBox::information(this, tr("수정 성공"), tr("회원 정보가 수정되었습니다."));     //수정에 성공했다는 메시지를 띄운다.
@@ -160,7 +160,7 @@ void ClientManager::updateClientInfo(QStringList updateList) {
             Client *c = static_cast<Client*>(v);    //auto변수 v의 자료형을 Client*형으로 변환 후 고정
 
             /*변경된 정보를 변수에 담는다.*/
-            userCount = c->userCount();
+            userNumber = c->userNumber();
             updateList[0] = c->getUserID();
             updateList[1] = c->getName();
             updateList[2] = c->getPhoneNumber();
@@ -168,7 +168,7 @@ void ClientManager::updateClientInfo(QStringList updateList) {
             updateList[4] = c->get_Gender();
 
             //변경된 정보를 item이라는 객체에 담는다.
-            Client *item = new Client(userCount, updateList[0], updateList[1], updateList[2], updateList[3], updateList[4]);
+            Client *item = new Client(userNumber, updateList[0], updateList[1], updateList[2], updateList[3], updateList[4]);
             emit sendClientInfo(item);  //관리자 페이지로 전달하기 위해 호출하는 SIGNAL
         }
     }
@@ -182,7 +182,7 @@ void ClientManager::deleteClientInfo(QString userId) {
     Q_FOREACH(auto v, clientList) {
         Client *c = static_cast<Client*>(v);    //auto변수 v의 자료형을 Client*형으로 변환 후 고정
         if(userId == c->getUserID()) {          //사용자 아이디가 등록되어 있던 아이디와 일치할 경우
-            clientList.remove(c->userCount());  //회원 정보 리스트에서 해당 아이디가 속한 정보를 삭제한다.
+            clientList.remove(c->userNumber());  //회원 정보 리스트에서 해당 아이디가 속한 정보를 삭제한다.
             QMessageBox::information(this, tr("삭제 성공"), tr("회원 삭제가 완료되었습니다.")); //삭제가 왼료되었으므로 삭제 완료 메시지를 표출한다.
             checkUser = false;  //등록된 회원이라는 것이 확인되어 삭제에 성공했기에 아래의 조건문을 위해 값을 변경한다.
             break;
@@ -198,7 +198,7 @@ void ClientManager::deleteClientInfo(QString userId) {
             Client *c = static_cast<Client*>(v);    //auto변수 v의 자료형을 Client*형으로 변환 후 고정
 
             //변경된 정보를 item이라는 객체에 담는다.
-            Client *item = new Client(c->userCount(), c->getUserID(), c->getName(), c->getPhoneNumber(), c->getAddress(), c->get_Gender());
+            Client *item = new Client(c->userNumber(), c->getUserID(), c->getName(), c->getPhoneNumber(), c->getAddress(), c->get_Gender());
             emit sendClientInfo(item);  //관리자 페이지로 전달하기 위해 호출하는 SIGNAL
         }
     }
@@ -207,14 +207,14 @@ void ClientManager::deleteClientInfo(QString userId) {
 //쇼핑 화면에서 관리자 페이지로 이동 버튼 클릭 시 회원 정보를 담아서 보내기 위한 SLOT 함수
 void ClientManager::containClientInfo() {
     QString userId, name, call, address, gender;
-    int ucnt;
+    int uNumber;
 
     /*관리자 페이지의 회원 위젯에 표시될 회원 정보들을 보내기 위한 반목문*/
     Q_FOREACH(auto v, clientList) {
         Client *c = static_cast<Client*>(v);    //auto변수 v의 자료형을 Client*형으로 변환 후 고정
 
         /*등록 되어있는 회원 정보를 각각의 변수에 담는다.*/
-        ucnt = c->userCount();
+        uNumber = c->userNumber();
         userId = c->getUserID();
         name = c->getName();
         call = c->getPhoneNumber();
@@ -222,7 +222,7 @@ void ClientManager::containClientInfo() {
         gender = c->get_Gender();
 
         //등록 되어있는 회원 정보를 item이라는 객체에 담는다.
-        Client *item = new Client(ucnt, userId, name, call, address, gender);
+        Client *item = new Client(uNumber, userId, name, call, address, gender);
         emit sendClientInfo(item);  //관리자 페이지로 전달하기 위해 호출하는 SIGNAL
     }
 }
@@ -268,7 +268,7 @@ int ClientManager::deleteId_List(QString id) {
     Q_FOREACH(auto v, clientList) {
         Client *c = static_cast<Client*>(v);    //auto변수 v의 자료형을 Client*형으로 변환 후 고정
         if(id == c->getUserID()) {              //인자로 받아온 회원 아이디가 회원 리스트에 등록된 아이디인 경우
-            clientList.remove(c->userCount());  //해당 아이디에 등록된 정보를 회원 리스트에서 삭제한다.
+            clientList.remove(c->userNumber());  //해당 아이디에 등록된 정보를 회원 리스트에서 삭제한다.
             cnt++;      //삭제가 왼료되었는지 확인하기 위한 cnt변수읙 값을 1 증가시킨다.
             break;
         }

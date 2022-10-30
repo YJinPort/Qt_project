@@ -23,6 +23,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->mdiArea->addSubWindow(productManager);
     shoppingManager->showMaximized();
 
+    /*쇼핑몰에서 보낸 SIGNAL을 처리하기 위한 연결*/
     connect(shoppingManager, SIGNAL(newClient()), this, SLOT(openClientWindow()));
     connect(shoppingManager, SIGNAL(onlyStaff()), this, SLOT(openProductWindow()));
     connect(shoppingManager, SIGNAL(exitShopping()), this, SLOT(close()));
@@ -36,19 +37,17 @@ MainWindow::MainWindow(QWidget *parent)
     connect(shoppingManager, SIGNAL(serverBtnClicked()), clientManager, SLOT(serverOpenFromShopping()));
     connect(shoppingManager, SIGNAL(serverInputComboBox()), clientManager, SLOT(sendNameListToServer()));
 
+    /*사용자 화면에서 보낸 SIGNAL을 처리하기 위한 연결*/
     connect(clientManager, SIGNAL(cancellation()), this, SLOT(cancellationClient()));
     connect(clientManager, SIGNAL(join()), this, SLOT(joinClient()));
     connect(clientManager, SIGNAL(sendClientInfo(Client*)), productManager, SLOT(receivedClientInfo(Client*)));
     connect(clientManager, SIGNAL(successLogin(QString)), shoppingManager, SLOT(successLoginCheck(QString)));
     connect(clientManager, SIGNAL(failedLogin()), shoppingManager, SLOT(failedLoginCheck()));
     connect(clientManager, SIGNAL(clear_Widget_N_LineEdit()), productManager, SLOT(clearClientWidget_N_LineEdit()));
-    //connect(clientManager, SIGNAL(sendToServer(int, QString)), server, SLOT(addClient(int, QString)));
-    //client -> shopping
     connect(clientManager, SIGNAL(sendToServer(QString, QString)), shoppingManager, SLOT(clientSignalReceived(QString, QString)));
     connect(clientManager, SIGNAL(sendNameToServer(QStringList)), shoppingManager, SLOT(inputNameServerCombobox(QStringList)));
 
-    //connect(this, signal2, server, slot(addclient));
-
+    /*관리자 화면에서 보낸 SIGNAL을 처리하기 위한 연결*/
     connect(productManager, SIGNAL(quitProduct()), this, SLOT(quitProductWindow()));
     connect(productManager, SIGNAL(sendProductInfo(Product*)), shoppingManager, SLOT(receivedProductInfo(Product*)));
     connect(productManager, SIGNAL(updateBtnClicked(QStringList)), clientManager, SLOT(updateClientInfo(QStringList)));

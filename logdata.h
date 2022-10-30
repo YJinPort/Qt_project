@@ -16,7 +16,7 @@ private:
     void run();     //로그 자동 저장을 위한 함수
 
     QList<QTreeWidgetItem*> itemList;   //기록할 로그의 데이터를 저장할 List
-    QString filename;                   //파일 전송 로그 기록 시 사용할 파일명
+    QString fileName;                   //파일 전송 로그 기록 시 사용할 파일명
 
 public slots:
     /*로그 기록 저장 시 사용할 SLOT 함수*/

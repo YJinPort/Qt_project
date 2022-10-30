@@ -38,7 +38,7 @@ private slots:
 private:
     Ui::ClientManager *ui;
 
-    int userCount();                //회원 수를 자동으로 생성하여 전달해주기 위한 함수
+    int userNumber();                //회원 수를 자동으로 생성하여 전달해주기 위한 함수
     QMap<int, Client*> clientList;  //사용자(회원) 정보를 저장하기 위한 QMap타입의 멤버 변수
 
 signals:

@@ -21,8 +21,8 @@ public:
 
 private slots:
     /*관리자 페이지에 생성된 버튼을 클릭했을 경우 실행하는 함수*/
-    void on_productRegisterPushButton_clicked();    //제품 등록/변경 버튼 클릭 시 동작
-    void on_productRemovePushButton_clicked();      //제품 삭제 버튼 클릭 시 동작
+    void on_proRegisterPushButton_clicked();    //제품 등록/변경 버튼 클릭 시 동작
+    void on_proRemovePushButton_clicked();      //제품 삭제 버튼 클릭 시 동작
     void on_clientUpdatePushButton_clicked();       //회원 정보 수정 버튼 클릭 시 동작
     void on_clientRemovePushButton_clicked();       //회원 삭제 버튼 클릭 시 동작
     void on_getOutPushButton_clicked();             //나가기 버튼 클릭 시 동작

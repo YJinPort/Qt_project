@@ -26,7 +26,7 @@ public:
     void setClientName(QString&);       //주문자의 이름을 지정하기 위해 사용
 
     /*주문 수를 호출하기 위해 사용되는 함수*/
-    int shoppingCount() const;      //주문 수를 호출하기 위해 사용
+    int shoppingNumber() const;      //주문 번호를 호출하기 위해 사용
 };
 
 #endif // SHOPPING_H

@@ -1,8 +1,8 @@
 #include "shopping.h"
 
-Shopping::Shopping(int shoppingCount, QString productName, int productPrice, int productCount, QString productType, QString clientAddress, QString clientName)
+Shopping::Shopping(int shoppingNumber, QString productName, int productPrice, int productCount, QString productType, QString clientAddress, QString clientName)
 {
-    setText(0, QString::number(shoppingCount));
+    setText(0, QString::number(shoppingNumber));
     setText(1, productName);
     setText(2, QString::number(productPrice));
     setText(3, QString::number(productCount));
@@ -12,7 +12,7 @@ Shopping::Shopping(int shoppingCount, QString productName, int productPrice, int
 }
 
 //주문 수를 호출하기 위해 사용
-int Shopping::shoppingCount() const {
+int Shopping::shoppingNumber() const {
     return text(0).toInt();
 }
 

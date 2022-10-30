@@ -24,9 +24,9 @@ public:
 
 private slots:
     void receivedLoginName(QString);                    //편리한 서버 접속을 위한 로그인한 회원의 이름을 자동 지정
-    void receiveData( );                                //서버에서 전달되는 데이터를 받을 경우 처리
-    void sendData( );                                   //메시지를 전송할 경우 실행
-    void disconnect( );                                 //연결이 끊어졌을 경우 처리
+    void receiveData();                                 //서버에서 전달되는 데이터를 받을 경우 처리
+    void sendData();                                    //메시지를 전송할 경우 실행
+    void disconnect();                                  //연결이 끊어졌을 경우 처리
     void sendProtocol(Chat_Status, char*, int = 1020);  //프로토콜 생성 후 서버로의 전송 처리
     void sendFile();                                    //파일 전송 시 처리
     void goOnSend(qint64);                              //용량이 큰 파일 전송 시 전송 용량 분할 처리

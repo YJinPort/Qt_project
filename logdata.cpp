@@ -8,7 +8,7 @@ LogData::LogData(QObject *parent)
     : QThread{parent}
 {
     QString format = "yyyyMMdd_hhmmss";
-    filename = QString("log_%1.txt").arg(QDateTime::currentDateTime().toString(format));
+    fileName = QString("log_%1.txt").arg(QDateTime::currentDateTime().toString(format));
 }
 
 //로그 자동 저장을 위한 함수
@@ -30,7 +30,7 @@ void LogData::appendData(QTreeWidgetItem* item)
 void LogData::saveData()
 {
     if(itemList.count() > 0) {
-        QFile file(filename);
+        QFile file(fileName);
         if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
             return;
 

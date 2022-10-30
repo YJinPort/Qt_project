@@ -24,7 +24,7 @@ public:
     void setGender(QString&);       //사용자 성별을 지정하기 위해 사용
 
     /*사용자 수를 호출하기 위해 사용되는 함수*/
-    int userCount() const;          //사용자 수를 호출하기 위해 사용
+    int userNumber() const;          //사용자 번호를 호출하기 위해 사용
 };
 
 #endif // CLIENT_H

@@ -66,7 +66,7 @@ ProductManager::~ProductManager()
 }
 
 //제품 등록/변경 버튼 클릭 시 동작
-void ProductManager::on_productRegisterPushButton_clicked()
+void ProductManager::on_proRegisterPushButton_clicked()
 {
     /*제품 번호, 이름, 가격, 수량을 입력하지 않았을 경우 경고메시지 발생*/
     if(ui->productNumberLineEdit->text().trimmed() == "") QMessageBox::warning(this, tr("등록 실패"), tr("제품 번호를 입력하여 주세요."));
@@ -133,7 +133,7 @@ void ProductManager::on_productRegisterPushButton_clicked()
 }
 
 //제품 삭제 버튼 클릭 시 동작
-void ProductManager::on_productRemovePushButton_clicked()
+void ProductManager::on_proRemovePushButton_clicked()
 {
     bool proDelete = true;
 
@@ -297,7 +297,7 @@ int ProductManager::updateAfterUpCount(QString name, int cnt) {
     Q_FOREACH(auto v, productList) {
         Product *p = static_cast<Product*>(v);          //auto변수 v의 자료형을 Product*형으로 변환 후 고정
         if(name == p->getProName()) {                   //QString 인자값이 제품 리스트에 등록 되어있는 제품의 이름과 같을 경우
-            afterCount = p->getProCount() - cnt;        //해당 제품에 대한 기존의 재고량에서 주문된 수량을 뺸다.
+            afterCount = p->getProCount() - cnt;        //해당 제품에 대한 기존의 재고량에서 주문된 수량을 뺀다.
             if(afterCount < 0) return -1;               //이후 재고량이 0개보다 적을 경우 재고 부족이라는 의미의 -1을 리턴한다.
             p->setProCount(afterCount);                 //상품의 재고량을 변경 이후의 값으로 조정한다.
             productList.insert(p->getProNumber(), p);   //변경된 정보를 productList에 저장한다.

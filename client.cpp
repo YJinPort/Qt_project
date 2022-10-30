@@ -1,8 +1,8 @@
 #include "client.h"
 
-Client::Client(int userCount, QString userID, QString name, QString phoneNumber, QString address, QString gender)
+Client::Client(int userNumber, QString userID, QString name, QString phoneNumber, QString address, QString gender)
 {
-    setText(0, QString::number(userCount));
+    setText(0, QString::number(userNumber));
     setText(1, userID);
     setText(2, name);
     setText(3, phoneNumber);
@@ -11,7 +11,7 @@ Client::Client(int userCount, QString userID, QString name, QString phoneNumber,
 }
 
 //사용자 수를 호출하기 위해 사용
-int Client::userCount() const {
+int Client::userNumber() const {
     return text(0).toInt();
 }
 

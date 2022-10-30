@@ -25,16 +25,16 @@ ShoppingManager::ShoppingManager(QWidget *parent) :
 
     /*저장된 정보가 끝날 때 까지 반복*/
     while (!in.atEnd()) {
-        QString line = in.readLine();           //저장 되어있는 정보를 QString타입의 변수에 담는다.
-        QList<QString> row = line.split(", ");  //리스트 변수 row에 ", " 구분자를 제외한 데이터를 담는다.
+        QString line = in.readLine();            //저장 되어있는 정보를 QString타입의 변수에 담는다.
+        QList<QString> row = line.split(", ");   //리스트 변수 row에 ", " 구분자를 제외한 데이터를 담는다.
         if(row.size()) {    //리스트가 비어있지 않은 경우
-            int shoppingCount = row[0].toInt(); //0번째 인덱스에 있는 정보를 int타입으로 변환하여 변수에 담는다.
-            int proPrice = row[2].toInt();      //2번째 인덱스에 있는 정보를 int타입으로 변환하여 변수에 담는다.
-            int proCount = row[3].toInt();      //3번째 인덱스에 있는 정보를 int타입으로 변환하여 변수에 담는다.
+            int shoppingNumber = row[0].toInt(); //0번째 인덱스에 있는 정보를 int타입으로 변환하여 변수에 담는다.
+            int proPrice = row[2].toInt();       //2번째 인덱스에 있는 정보를 int타입으로 변환하여 변수에 담는다.
+            int proCount = row[3].toInt();       //3번째 인덱스에 있는 정보를 int타입으로 변환하여 변수에 담는다.
 
             //해당 정보를 담은 객체를 생성한다.
-            Shopping* s = new Shopping(shoppingCount, row[1], proPrice, proCount, row[4], row[5], row[6]);
-            shoppingList.insert(shoppingCount, s);  //정보를 담은 객체를 주문 리스트에 저장한다.
+            Shopping* s = new Shopping(shoppingNumber, row[1], proPrice, proCount, row[4], row[5], row[6]);
+            shoppingList.insert(shoppingNumber, s);  //정보를 담은 객체를 주문 리스트에 저장한다.
         }
     }
     file.close();   //shoppinglist.txt파일에 저장된 정보를 모두 회원 리스트에 저장했으므로 파일을 종료한다.
@@ -59,7 +59,7 @@ ShoppingManager::~ShoppingManager()
         Shopping* s = v;
 
         /*주문 리스트에 대한 각 정보들을 , 를 구분자로 하여 파일(shoppinglist.txt)에 저장한다.*/
-        out << s->shoppingCount() << ", " << s->getProductName() << ", ";
+        out << s->shoppingNumber() << ", " << s->getProductName() << ", ";
         out << s->getProductPrice() << ", " << s->getProductCount() << ", ";
         out << s->getProductType() << ", " << s->getClientAddress() << ", ";
         out << s->getClientName() << "\n";
@@ -86,7 +86,7 @@ void ShoppingManager::dataClear() {
 }
 
 //주문 번호를 자동으로 생성하여 전달해주기 위한 함수
-int ShoppingManager::shoppingCount() {
+int ShoppingManager::shoppingNumber() {
     if(shoppingList.size() == 0) return 1;  //주문 정보 리스트에 저장된 정보가 없으면 1을 반환한다.
     else {
         auto cnt = shoppingList.lastKey();  //주문 정보 리스트에 저장된 마지막 키값을 얻는다.
@@ -168,7 +168,7 @@ void ShoppingManager::failedLoginCheck() {
 //주문하기 버튼 클릭 시 동작
 void ShoppingManager::on_takeOrderPushButton_clicked()
 {
-    int orderCount, proPrice, proCount, checkCount;
+    int orderNumber, proPrice, proCount, checkCount;
     QString proName, proType, address;
     QString clientName;
     QList<QString> labelText;   //로그인한 아이디의 회원 이름을 구하기 위해 사용한 List변수
@@ -184,7 +184,7 @@ void ShoppingManager::on_takeOrderPushButton_clicked()
 
     /*로그인을 성공하여 Label의 길이가 길어지고 주문할 제품을 제품 위젯에서 선택했을 경우 실행*/
     if(ui->orderListLabel->text().length() > 5 && ui->productInfoTreeWidget->currentItem() != nullptr) {
-        orderCount = shoppingCount();   //주문 번호의 경우 숫자를 자동으로 리턴해주는 함수를 사용하여 설정
+        orderNumber = shoppingNumber();   //주문 번호의 경우 숫자를 자동으로 리턴해주는 함수를 사용하여 설정
 
         /*제품 이름, 제품 가격은 제품 위젯에서 인텍스로 가져온다.*/
         proName = ui->productInfoTreeWidget->currentItem()->text(1);
@@ -211,8 +211,8 @@ void ShoppingManager::on_takeOrderPushButton_clicked()
         }
 
         //주문한 값이 저장된 객체를 생성한다.
-        Shopping *s = new Shopping(orderCount, proName, proPrice, proCount, proType, address, clientName);
-        shoppingList.insert(orderCount, s);             //주문한 내역을 주문 리스트에 저장한다.
+        Shopping *s = new Shopping(orderNumber, proName, proPrice, proCount, proType, address, clientName);
+        shoppingList.insert(orderNumber, s);             //주문한 내역을 주문 리스트에 저장한다.
         ui->orderListTreeWidget->addTopLevelItem(s);    //주문한 내역을 주문 위젯에 추가한다.
 
         QMessageBox::information(this, tr("주문 성공"), tr("주문이 완료되었습니다."));
@@ -256,7 +256,7 @@ void ShoppingManager::on_updateOrderPushButton_clicked()
                 Shopping *s = static_cast<Shopping*>(v);    //auto변수 v의 자료형을 Shopping*형으로 변환 후 고정
 
                 /*변경한 주문에 대한 번호가 주문 내역 리스트의 번호와 일치할 경우*/
-                if(ui->orderListTreeWidget->currentItem()->text(0).toInt() == s->shoppingCount()) {
+                if(ui->orderListTreeWidget->currentItem()->text(0).toInt() == s->shoppingNumber()) {
 
                     /*기존의 주문수량이 변경할 수량보다 작을 경우*/
                     if(s->getProductCount() < updateCount) {
@@ -304,7 +304,7 @@ void ShoppingManager::on_updateOrderPushButton_clicked()
                 Shopping *s = static_cast<Shopping*>(v);    //auto변수 v의 자료형을 Shopping*형으로 변환 후 고정
 
                 /*변경할 주문에 대한 번호가 주문 내역 리스트의 번호와 일치할 경우*/
-                if(ui->orderListTreeWidget->currentItem()->text(0).toInt() == s->shoppingCount()) {
+                if(ui->orderListTreeWidget->currentItem()->text(0).toInt() == s->shoppingNumber()) {
                     s->setClientAddress(updateAddress);     //주문 내역의 배송 주소를 수정한다.
                     ui->orderListTreeWidget->currentItem()->setText(5, updateAddress);                  //주문 위젯에서의 내용도 변경한다.
                     shoppingList.insert(ui->orderListTreeWidget->currentItem()->text(0).toInt(), s);    //변경된 내용을 주문 리스트에 저장한다.
@@ -331,7 +331,7 @@ void ShoppingManager::on_cancelOrderPushButton_clicked()
         /*주문 취소 후 처리를 위한 반복문*/
         Q_FOREACH(auto v, shoppingList) {
             Shopping *s = static_cast<Shopping*>(v);    //auto변수 v의 자료형을 Shopping*형으로 변환 후 고정
-            if(eraseNum == s->shoppingCount()) {        //취소할 주문에 대한 번호가 주문 내역 리스트의 번호와 일치할 경우
+            if(eraseNum == s->shoppingNumber()) {        //취소할 주문에 대한 번호가 주문 내역 리스트의 번호와 일치할 경우
                 //주문 취소 후 제품의 재고량 관리를 위한 SIGNAL
                 emit updateAfter_downCount(ui->orderListTreeWidget->currentItem()->text(1), ui->orderListTreeWidget->currentItem()->text(3).toInt());
                 shoppingList.remove(eraseNum);          //주문 리스트에서 취소할 주문에 대한 정보를 삭제한다.

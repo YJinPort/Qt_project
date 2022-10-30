@@ -79,14 +79,14 @@ ChattingForm_Client::ChattingForm_Client(QWidget *parent)
     fileButton->setDisabled(true);
 
     /*접속 종료를 위한 버튼 생성 및 연결*/
-    QPushButton* quitButton = new QPushButton("Exit", this);
-    connect(quitButton, SIGNAL(clicked()), this, SLOT(close()));
+    QPushButton* exitButton = new QPushButton("Exit", this);
+    connect(exitButton, SIGNAL(clicked()), this, SLOT(close()));
 
     /*생성한 버튼들을 HBoxLayout의 위젯으로 추가*/
     QHBoxLayout *buttonLayout = new QHBoxLayout;
     buttonLayout->addWidget(fileButton);
     buttonLayout->addStretch(1);
-    buttonLayout->addWidget(quitButton);
+    buttonLayout->addWidget(exitButton);
 
     /*생성한 HBoxLayout들을 QVBoxLayout 위젯으로 추가*/
     QVBoxLayout *mainLayout = new QVBoxLayout(this);

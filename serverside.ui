@@ -22,9 +22,9 @@
      <widget class="QWidget" name="layoutWidget">
       <layout class="QVBoxLayout" name="clientListVerticalLayout">
        <item>
-        <widget class="QLabel" name="clientListLabel">
+        <widget class="QLabel" name="loginClientListLabel">
          <property name="text">
-          <string>Client List</string>
+          <string>Login Client List</string>
          </property>
         </widget>
        </item>
@@ -54,6 +54,13 @@
            <string>Status</string>
           </property>
          </column>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="logoutClientListLabel">
+         <property name="text">
+          <string>Logout Client List</string>
+         </property>
         </widget>
        </item>
        <item>
@@ -91,6 +98,13 @@
      </widget>
      <widget class="QWidget" name="layoutWidget">
       <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
+        <widget class="QLabel" name="logDataLabel">
+         <property name="text">
+          <string>Log Data</string>
+         </property>
+        </widget>
+       </item>
        <item>
         <widget class="QTreeWidget" name="messageTreeWidget">
          <property name="rootIsDecorated">

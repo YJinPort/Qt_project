@@ -56,7 +56,7 @@ private slots:
 private:
     Ui::ShoppingManager *ui;
 
-    int shoppingCount();                    //주문 번호를 자동으로 생성하여 전달해주기 위한 함수
+    int shoppingNumber();                    //주문 번호를 자동으로 생성하여 전달해주기 위한 함수
     QMap<int, Shopping*> shoppingList;      //주문 정보(내역)을 저장하기 위한 QMap타입의 멤버 변수
     ServerSide *serverForm;
 

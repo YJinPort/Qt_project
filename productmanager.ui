@@ -212,7 +212,7 @@
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout_2">
            <item>
-            <widget class="QPushButton" name="productRegisterPushButton">
+            <widget class="QPushButton" name="proRegisterPushButton">
              <property name="font">
               <font>
                <stylestrategy>PreferDefault</stylestrategy>
@@ -224,7 +224,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="productRemovePushButton">
+            <widget class="QPushButton" name="proRemovePushButton">
              <property name="text">
               <string>제품 삭제</string>
              </property>
@@ -278,7 +278,7 @@
          <item>
           <layout class="QFormLayout" name="formLayout_2">
            <item row="0" column="0">
-            <widget class="QLabel" name="label_7">
+            <widget class="QLabel" name="userIdLabel">
              <property name="font">
               <font>
                <pointsize>15</pointsize>
@@ -306,7 +306,7 @@
             </spacer>
            </item>
            <item row="2" column="0">
-            <widget class="QLabel" name="label_8">
+            <widget class="QLabel" name="userNameLabel">
              <property name="font">
               <font>
                <pointsize>15</pointsize>
@@ -334,7 +334,7 @@
             </spacer>
            </item>
            <item row="4" column="0">
-            <widget class="QLabel" name="label_9">
+            <widget class="QLabel" name="userCallLabel">
              <property name="font">
               <font>
                <pointsize>15</pointsize>
@@ -362,7 +362,7 @@
             </spacer>
            </item>
            <item row="6" column="0">
-            <widget class="QLabel" name="label_10">
+            <widget class="QLabel" name="userAddressLabel">
              <property name="font">
               <font>
                <pointsize>15</pointsize>
@@ -377,7 +377,7 @@
             <widget class="QLineEdit" name="userAddressLineEdit"/>
            </item>
            <item row="8" column="0">
-            <widget class="QLabel" name="label_11">
+            <widget class="QLabel" name="userGenderLabel">
              <property name="font">
               <font>
                <pointsize>15</pointsize>
